@@ -2,7 +2,6 @@
 #include "WiFi_AP.h"
 #include "ESP32Time.h"
 #include "AM2320.h"
-//#include <memory>
 
 Preferences preferences;
 
@@ -53,8 +52,12 @@ void ConfigWiFi(ConfigValues &config)
     else if (strcmp(config.WifiMode, "WIFI_STA") == 0)
     {
         WiFi.mode(WIFI_STA);
-        WiFi.setAutoConnect(true);   // Автоматически подключаемся к последней успешной сети
-        WiFi.setAutoReconnect(true); // Автоматически пытаемся переподключиться при потере соединения
+        /*Automatically connect to the last successful network*/
+        /*// Автоматически подключаемся к последней успешной сети*/
+        WiFi.setAutoConnect(true);  
+        /*Automatically try to reconnect when connection is lost*/
+        /*Автоматически пытаемся переподключиться при потере соединения*/ 
+        WiFi.setAutoReconnect(true); 
 
         WiFi.begin(config.WifiSsid, config.WiFiPassword);
 
@@ -78,10 +81,10 @@ void ConfigWiFi(ConfigValues &config)
     }
 }
 
-// Получить температуру с датчика am2320
+ /*Get temperature from am2320 sensor*/
+ /*Получить температуру с датчика am2320*/
 std::unique_ptr<float[]> GetMeasurementsFromSensor()
 {
-    // float *array = new float[2];
     std::unique_ptr<float[]> array(new float[2]);
     AM2320 am2320(&Wire);
     Wire.begin(19, 23);
@@ -120,7 +123,8 @@ std::unique_ptr<float[]> GetMeasurementsFromSensor()
         return array;
     }
     default:
-        // Возвращаем какое-то значение по умолчанию, если вдруг произошло что-то неожиданное
+        /*Возвращаем какое-то значение по умолчанию, если вдруг произошло что-то неожиданное*/
+        /*Return some default value if something unexpected happens*/
         {
             array[0] = -1000.00f;
             array[1] = -1000.00f;

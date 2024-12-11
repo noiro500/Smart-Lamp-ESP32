@@ -19,6 +19,7 @@ extern ESP32Time rtc;
 extern Preferences preferences;
 
 // Структура конфигурации
+//Structure of Configuration
 typedef struct
 {
     char WifiMode[9];

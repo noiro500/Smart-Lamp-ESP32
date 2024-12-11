@@ -53,7 +53,8 @@ void TemperatureInHoursTask(void *pvParameters)
     TempAndHumInHours *tempAndHumInHours = (TempAndHumInHours *)pvParameters;
     ESP32Time rtc;
     int lastUpdateHour = -1;
-    // Получение начального времени для vTaskDelayUntil
+    /*Getting the initial time for vTaskDelayUntil*/
+    /*Получение начального времени для vTaskDelayUntil*/
     TickType_t xLastWakeTime = xTaskGetTickCount();
 
     while (true)
@@ -64,7 +65,8 @@ void TemperatureInHoursTask(void *pvParameters)
         if (currentHour != lastUpdateHour)
         {
             if (currentHour == 0)
-            // Очистить структуру temperatureInHours и обновить время с сервера
+            /*Clear the temperatureInHours structure and update the time from the server*/
+            /*Очистить структуру temperatureInHours и обновить время с сервера*/
             {
                 memset(tempAndHumInHours->hour, 0, sizeof(tempAndHumInHours->hour));
                 memset(tempAndHumInHours->temperature, 0, sizeof(tempAndHumInHours->temperature));
@@ -84,18 +86,21 @@ void TemperatureInHoursTask(void *pvParameters)
             tempAndHumInHours->hour[currentHour] = currentHour;
             tempAndHumInHours->temperature[currentHour] = measurements[0];
             tempAndHumInHours->humidity[currentHour] = measurements[1];
-            //delete[] measurements;
             xSemaphoreGive(xMutexSensor);
             lastUpdateHour = currentHour;
         }
         xSemaphoreGive(xMutexConfig);
-        // Рассчитать задержку до начала следующего часа
+        /*Calculate the delay until the beginning of the next hour*/
+        /*Рассчитать задержку до начала следующего часа*/
         int currentMinute = rtc.getMinute();
         int currentSecond = rtc.getSecond();
-        int delaySeconds = (60 - currentMinute) * 60 - currentSecond; // Секунды до следующего часа
+        /*Seconds until the next hour*/
+        /*Секунды до следующего часа*/
+        int delaySeconds = (60 - currentMinute) * 60 - currentSecond;
         Serial.printf("%s\n", (rtc.getDateTime(true)).c_str());
         TickType_t delayTicks = delaySeconds * 1000 / portTICK_PERIOD_MS;
-        // Ожидаем до начала следующего часа
+        /*Waiting until the beginning of the next hour*/
+        /*Ожидание до начала следующего часа*/
         vTaskDelayUntil(&xLastWakeTime, delayTicks);
     }
 }

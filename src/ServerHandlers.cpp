@@ -172,10 +172,6 @@ void HandleGetConfigValues()
         server.send(500, "text/html", "Unable to load config from NVS");
         return;
     }
-    /*String configString = String(config.WifiMode) + ", " + String(config.SoftApIP[0]) + "." + String(config.SoftApIP[1]) + "." + String(config.SoftApIP[2]) + "." + String(config.SoftApIP[3])+ ", " +
-                          String(config.SoftIpSubnetMask[0]) + "." + String(config.SoftIpSubnetMask[1]) + "." + String(config.SoftIpSubnetMask[2]) + "." + String(config.SoftIpSubnetMask[3]) + ", " +
-                          String(config.WiFiPassword) + ", " + String(config.SoftApSsid) + ", " + String(config.WifiSsid) + ", " +
-                          String(config.LampAlwayseOn) + ", " + String(config.LampOnTimeHours) + ", " + String(config.LampOffTimeHours);*/
     std::unique_ptr<char[]> configString;
     PrepareConfigString(config, configString);
     server.send(200, "text/html", configString.get());

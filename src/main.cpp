@@ -25,7 +25,6 @@ void setup()
     SaveConfigToNVS(defaultValues);
     Serial.println("Save Default config in EEPROM. Restart");
     delay(1000);
-    // Перезагрузить esp32
     ESP.restart();
   }
 
