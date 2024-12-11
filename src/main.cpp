@@ -4,16 +4,17 @@
 #include "ServerHandlers.h"
 #include "WorkTasks.h"
 
+/*Default value structure */
 ConfigValues defaultValues = {
-    "WIFI_STA",
-    {192, 168, 4, 1},
-    {255, 255, 255, 0},
-    "11012700",
-    "CactusLampESP32",
-    "Wi_Fi_Station",
-    0,
-    8,
-    22};
+    "WIFI_STA",         //WiFi Mode (WIFI_AP, WIFI_STA)
+    {192, 168, 4, 1},   //WIFI_AP IP
+    {255, 255, 255, 0}, //WIFI_AP Netmask
+    "123456789",        //Password
+    "CactusLampESP32",  //Ssid for WIFI_AP
+    "Wi_Fi_Station",    //Ssid for WIFI_STA
+    0,                  //Lamp always on? (0 - yes, 1 - no)  
+    8,                  //Lamp on hour  
+    22};                //Lamp off hour
 
 ConfigValues loadConfig;
 

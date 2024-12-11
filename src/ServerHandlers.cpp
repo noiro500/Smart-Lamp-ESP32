@@ -65,7 +65,7 @@ void HandleSetRtc()
     }
     if (WiFi.getMode() == WIFI_STA && WiFi.status() == WL_CONNECTED)
     {
-        configTime(3 * 3600, 0, "ntp0.ntp-servers.net");
+        configTime(TIMEZONE * 3600, DAYLIGHTOFFSET, "ntp0.ntp-servers.net");
         struct tm timeinfo;
         if (getLocalTime(&timeinfo))
         {

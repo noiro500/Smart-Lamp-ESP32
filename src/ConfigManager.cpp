@@ -70,7 +70,7 @@ void ConfigWiFi(ConfigValues &config)
         Serial.println("Connected to the WiFi network");
         Serial.println(WiFi.localIP());
         ESP32Time rtcToWiFiStart;
-        configTime(3 * 3600, 0, "ntp0.ntp-servers.net");
+        configTime(TIMEZONE * 3600, DAYLIGHTOFFSET, "ntp0.ntp-servers.net");
         struct tm timeinfo;
         if (getLocalTime(&timeinfo))
         {

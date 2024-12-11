@@ -1,6 +1,9 @@
 #ifndef CONFIG_MANAGER_H
 #define CONFIG_MANAGER_H
 
+#define TIMEZONE 3 //TimeZone, hour
+#define DAYLIGHTOFFSET 0 * 60 * 60 // Offset for summer/winter time transition in seconds
+
 #include <Arduino.h>
 #include <Preferences.h>
 #include <WiFi.h>
