@@ -1,14 +1,12 @@
 #ifndef CONFIG_MANAGER_H
 #define CONFIG_MANAGER_H
 
-#define TIMEZONE 3 //TimeZone, hour
-#define DAYLIGHTOFFSET 0 * 60 * 60 // Offset for summer/winter time transition in seconds
-
 #include <Arduino.h>
 #include <Preferences.h>
 #include <WiFi.h>
 #include "AM2320.h"
 #include "ESP32Time.h"
+#include "GeneralParameters.h"
 #include <memory>
 
 extern SemaphoreHandle_t xMutexConfig;
@@ -16,7 +14,7 @@ extern SemaphoreHandle_t xMutexSensor;
 extern TaskHandle_t lampTaskHandle;
 extern TaskHandle_t wifiGuardTaskHandle;
 extern TaskHandle_t temperatureInHoursTaskHandle;
-extern int lampPin;
+extern int RelaylampPin;
 extern AM2320 am2320;
 extern ESP32Time rtc;
 extern Preferences preferences;

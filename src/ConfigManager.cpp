@@ -70,7 +70,7 @@ void ConfigWiFi(ConfigValues &config)
         Serial.println("Connected to the WiFi network");
         Serial.println(WiFi.localIP());
         ESP32Time rtcToWiFiStart;
-        configTime(TIMEZONE * 3600, DAYLIGHTOFFSET, "ntp0.ntp-servers.net");
+        configTime(TIMEZONE * 3600, DAYLIGHTOFFSET, NTP_SERVER);
         struct tm timeinfo;
         if (getLocalTime(&timeinfo))
         {
@@ -87,7 +87,7 @@ std::unique_ptr<float[]> GetMeasurementsFromSensor()
 {
     std::unique_ptr<float[]> array(new float[2]);
     AM2320 am2320(&Wire);
-    Wire.begin(19, 23);
+    Wire.begin(SDA_PIN, SCL_PIN);
     switch (am2320.Read())
     {
     case 2:

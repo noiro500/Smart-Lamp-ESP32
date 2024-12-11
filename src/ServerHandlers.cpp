@@ -15,7 +15,7 @@ void HandleRoot()
 void HandleGetTempAndHum()
 {
     xSemaphoreTake(xMutexSensor, portMAX_DELAY);
-    Wire.begin(19, 23);
+    Wire.begin(SDA_PIN, SCL_PIN);
     switch (am2320.Read())
     {
     case 2:
@@ -65,7 +65,7 @@ void HandleSetRtc()
     }
     if (WiFi.getMode() == WIFI_STA && WiFi.status() == WL_CONNECTED)
     {
-        configTime(TIMEZONE * 3600, DAYLIGHTOFFSET, "ntp0.ntp-servers.net");
+        configTime(TIMEZONE * 3600, DAYLIGHTOFFSET, NTP_SERVER);
         struct tm timeinfo;
         if (getLocalTime(&timeinfo))
         {

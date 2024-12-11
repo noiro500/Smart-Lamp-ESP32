@@ -7,12 +7,12 @@ SemaphoreHandle_t xMutexSensor = xSemaphoreCreateMutex();
 TaskHandle_t lampTaskHandle;
 TaskHandle_t wifiGuardTaskHandle;
 TaskHandle_t temperatureInHoursTaskHandle;
-int lampPin = 22;
+int RelaylampPin = RELAY_LAMP_PIN;
 TempAndHumInHours temperatureInHours;
 
 void LampTask(void *pvParameters)
 {
-    pinMode(lampPin, OUTPUT);
+    pinMode(RelaylampPin, OUTPUT);
     ConfigValues config;
 
     while (true)
@@ -28,7 +28,7 @@ void LampTask(void *pvParameters)
 
         if (config.LampAlwayseOn == 1)
         {
-            digitalWrite(lampPin, HIGH);
+            digitalWrite(RelaylampPin, HIGH);
             // Serial.println("Lamp always on");
             vTaskDelay(1000 / portTICK_PERIOD_MS);
             continue;
@@ -36,12 +36,12 @@ void LampTask(void *pvParameters)
         int hour = rtc.getHour(true);
         if (hour < config.LampOnTimeHours || hour >= config.LampOffTimeHours)
         {
-            digitalWrite(lampPin, LOW);
+            digitalWrite(RelaylampPin, LOW);
             // Serial.println("Lamp off");
         }
         else
         {
-            digitalWrite(lampPin, HIGH);
+            digitalWrite(RelaylampPin, HIGH);
             // Serial.println("Lamp on");
         }
         vTaskDelay(5000 / portTICK_PERIOD_MS);
@@ -73,7 +73,7 @@ void TemperatureInHoursTask(void *pvParameters)
                 memset(tempAndHumInHours->humidity, 0, sizeof(tempAndHumInHours->humidity));
                 if (WiFi.getMode() == WIFI_STA && WiFi.status() == WL_CONNECTED)
                 {
-                    configTime(TIMEZONE* 3600, DAYLIGHTOFFSET, "ntp0.ntp-servers.net");
+                    configTime(TIMEZONE* 3600, DAYLIGHTOFFSET, NTP_SERVER);
                     struct tm timeinfo;
                     if (getLocalTime(&timeinfo))
                     {
