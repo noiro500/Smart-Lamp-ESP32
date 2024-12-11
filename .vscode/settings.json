@@ -1,0 +1,17 @@
+{
+    "workbench.colorTheme": "Visual Studio Dark Theme",
+    "workbench.preferredDarkColorTheme": "Visual Studio Blue",
+    "C_Cpp.errorSquiggles": "disabled",
+    "files.associations": {
+        "array": "cpp",
+        "deque": "cpp",
+        "string": "cpp",
+        "unordered_map": "cpp",
+        "unordered_set": "cpp",
+        "vector": "cpp",
+        "string_view": "cpp",
+        "initializer_list": "cpp",
+        "typeinfo": "cpp",
+        "memory": "cpp"
+    }
+}
