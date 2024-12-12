@@ -6,15 +6,15 @@
 
 /*Default value structure */
 ConfigValues defaultValues = {
-    "WIFI_STA",         //WiFi Mode (WIFI_AP, WIFI_STA)
-    {192, 168, 4, 1},   //WIFI_AP IP
-    {255, 255, 255, 0}, //WIFI_AP Netmask
-    "123456789",        //Password
-    "CactusLampESP32",  //Ssid for WIFI_AP
-    "Wi_Fi_Station",    //Ssid for WIFI_STA
-    0,                  //Lamp always on? (0 - yes, 1 - no)  
-    8,                  //Lamp on hour  
-    22};                //Lamp off hour
+    WIFI_MODE,                     // WiFi Mode (WIFI_AP, WIFI_STA)
+    WIFI_AP_IP,                    // WIFI_AP IP
+    WIFI_AP_NETMASK,               // WIFI_AP Netmask
+    PASSWORD,                      // Password
+    WIFI_AP_SSID,                  // Ssid for WIFI_AP
+    WIFI_STA_SSID,                 // Ssid for WIFI_STA
+    LAMP_OLWAYS_ON,                // Lamp always on? (0 - yes, 1 - no)
+    LAMP_ON_HOUR,                  // Lamp on hour
+    LAMP_OFF_HOUR};                // Lamp off hour
 
 ConfigValues loadConfig;
 
