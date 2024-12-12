@@ -2,8 +2,8 @@
 
 void HandleRoot();
 void HandleGetTempAndHum();
-void HandleSetRtc();
-void HandleGetRtc();
+void HandleSetTime();
+void HandleGetTime();
 void HandleTemperatureInHours();
 void HandleSetWiFiSTAParam();
 void HandleSetLampTime();

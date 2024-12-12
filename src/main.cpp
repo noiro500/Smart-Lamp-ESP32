@@ -33,8 +33,8 @@ void setup()
 
   server.on("/", HandleRoot);
   server.on("/gettempandhum", HandleGetTempAndHum);
-  server.on("/settime", HandleSetRtc);
-  server.on("/gettime", HandleGetRtc);
+  server.on("/settime", HandleSetTime);
+  server.on("/gettime", HandleGetTime);
   server.on("/data", HandleTemperatureInHours);
   server.on("/setwifistaparam", HandleSetWiFiSTAParam);
   server.on("/setlamptime", HandleSetLampTime);

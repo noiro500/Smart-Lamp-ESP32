@@ -47,7 +47,7 @@ void HandleGetTempAndHum()
     xSemaphoreGive(xMutexSensor);
 }
 
-void HandleSetRtc()
+void HandleSetTime()
 {
     const char *urlExample = "http://x.x.x.x:180/settime?hour=0&min=0&sec=0&day=1&month=1&year=2022";
     if (WiFi.getMode() == WIFI_AP && server.args() == 0)
@@ -76,7 +76,7 @@ void HandleSetRtc()
     server.send(200, "text/html", "Time is set to: " + rtc.getDateTime(true));
 }
 
-void HandleGetRtc()
+void HandleGetTime()
 {
     server.send(200, "text/html", rtc.getDateTime(true));
 }

@@ -1,4 +1,5 @@
 #include "WiFi_AP.h"
+#include "GeneralParameters.h"
 
 DNSServer dnsServer;
-WebServer server(180);
+WebServer server(WEBSERVER_PORT);
