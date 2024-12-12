@@ -10,7 +10,7 @@ ConfigValues config;
 
 void HandleRoot()
 {
-    server.send(200, "text/html", "<h1>ESP32 Cactus Lamp</h1>");
+    server.send(200, "text/html", GREETINGS);
 }
 
 void HandleGetTempAndHum()
