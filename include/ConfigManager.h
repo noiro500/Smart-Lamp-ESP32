@@ -7,7 +7,6 @@
 #include "AM2320.h"
 #include "ESP32Time.h"
 #include "GeneralParameters.h"
-#include <memory>
 
 extern SemaphoreHandle_t xMutexConfig;
 extern SemaphoreHandle_t xMutexSensor;
@@ -46,6 +45,5 @@ extern TempAndHumInHours temperatureInHours;
 void SaveConfigToNVS(ConfigValues &config);
 bool LoadConfigFromNVC(ConfigValues &);
 void ConfigWiFi(ConfigValues &);
-std::unique_ptr<float[]> GetMeasurementsFromSensor();
 void PrepareConfigString(const ConfigValues &, std::unique_ptr<char[]> &);
 #endif // CONFIG_MANAGER_H

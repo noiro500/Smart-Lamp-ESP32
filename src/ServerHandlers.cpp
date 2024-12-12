@@ -2,6 +2,7 @@
 #include "WiFi_AP.h"
 #include "ConfigManager.h"
 #include "Json.h"
+#include "SensorMeasurements.h"
 
 AM2320 am2320(&Wire);
 ESP32Time rtc;
