@@ -62,6 +62,19 @@
 
 | Запрос | Результат выполнения запроса | Параметры |
 | --- | --- | --- |
-| http://\<ESP32\_IP>:`WEBSERVER_PORT/` | Вывод приветственной строки | Отсутствуют |
-| http://\<ESP32\_IP>:`WEBSERVER_PORT/gettempandhum` | Вывод усредненной температуры и влажности | Отсутствуют |
-| "http://\<ESP32\_IP>:`WEBSERVER_PORT`/settime?hour=0&min=0&sec=0&day=1&month=1&year=2022" | Установка времени | Если ESP32 в режиме WIFI\_STA, то  время обновляется с сервера ntp. Если ESP32 в режиме WIFI\_AP, то в параметрах запроса необходимо ввести часы, минуты, секунды, день, месяц, год. |
+| 
+```html
+http://<ESP32_IP>:WEBSERVER_PORT/
+```
+
+ | Вывод приветственной строки | Отсутствуют |
+| http://\<ESP32\_IP>:`WEBSERVER_PORT/gettempandhum` | Получение усредненной температуры и влажности | Отсутствуют |
+| http://\<ESP32\_IP>:`WEBSERVER_PORT`/settime?hour=0&min=0&sec=0&day=1&month=1&year=2022" | Установка времени RTC ESP32 | Если ESP32 в режиме WIFI\_STA, то  время обновляется с сервера ntp. Если ESP32 в режиме WIFI\_AP, то в параметрах запроса необходимо ввести часы, минуты, секунды, день, месяц, год |
+| http://\<ESP32\_IP>:`WEBSERVER_PORT`/gettime | Получение времени RTC ESP32 | Отсутствуют |
+| http://\<ESP32\_IP>:`WEBSERVER_PORT`/data | Выводи в формате JSON время, температуру, влажность, начиная с 0 часов | Отсутствуют |
+| http://\<ESP32\_IP>:`WEBSERVER_PORT`/setwifistaparam?ssid=MyWiFi&password=12345678 | Установка ssid для режима WIFI\_STA и пароля для режима WIFI\_STA и WIFI\_AP  | ssid - имя точки доступа, password - пароль |
+| http://\<ESP32\_IP>:`WEBSERVER_PORT`/setlamptime?on=8&off=22 | Установка времени (в часах) включения и выключения подключенного к реле устройства | on - час включения, off - час отключения |
+| http://\<ESP32\_IP>:`WEBSERVER_PORT`/lampalwayson?on=0 | Включено ли подключенное к реле устройство постоянно | on=1 - разрешить работать постоянно постоянно, on=0 - запретить работать постоянно |
+| http://\<ESP32\_IP>:`WEBSERVER_PORT/getconfigvalues` | Вывод текущей конфигурации | Отсутствуют |
+| http://\<ESP32\_IP>:`WEBSERVER_PORT/`changewifimode?mode=WIFI\_AP | Смена режима работы WIFI ESP32 | mode - либо WIFI\_STA, либо WIFI\_AP |
+| http://\<ESP32\_IP>:`WEBSERVER_PORT/rebootdevice` | Перезагрузка ESP32 | Отсутствуют |
