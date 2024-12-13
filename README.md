@@ -62,17 +62,17 @@ After uploading, a web server starts on port `WEBSERVER_PORT`, which accepts the
 
 | Request | Result | Parameters |
 | --- | --- | --- |
-| http://\<ESP32\_IP>:\`WEBSERVER\_PORT/\` | Displays a greeting string | None |
-| http://\<ESP32\_IP>:\`WEBSERVER\_PORT/gettempandhum\` | Retrieves average temperature and humidity | None |
-| http://\<ESP32\_IP>:\`WEBSERVER\_PORT/settime?hour=0&min=0&sec=0&day=1&month=1&year=2022" | Sets the RTC time of ESP32 | If ESP32 is in WIFI\_STA mode, the time is updated from the NTP server. If in WIFI\_AP mode, specify hours, minutes, seconds, day, month, year in the request parameters |
-| http://\<ESP32\_IP>:\`WEBSERVER\_PORT/gettime\` | Gets the RTC time of ESP32 | None |
-| http://\<ESP32\_IP>:\`WEBSERVER\_PORT/data\` | Outputs time, temperature, and humidity starting from midnight in JSON format | None |
-| http://\<ESP32\_IP>:\`WEBSERVER\_PORT/setwifistaparam?ssid=MyWiFi&password=12345678" | Sets the SSID for WIFI\_STA mode and the password for both WIFI\_STA and WIFI\_AP modes | ssid - access point name, password - password |
-| http://\<ESP32\_IP>:\`WEBSERVER\_PORT/setlamptime?on=8&off=22" | Sets the on/off times (in hours) for the device connected to the relay | on - hour to turn on, off - hour to turn off |
-| http://\<ESP32\_IP>:\`WEBSERVER\_PORT/lampalwayson?on=0" | Checks if the device connected to the relay is constantly on | on=1 - allow constant operation, on=0 - disallow constant operation |
-| http://\<ESP32\_IP>:\`WEBSERVER\_PORT/getconfigvalues\` | Outputs the current configuration | None |
-| http://\<ESP32\_IP>:\`WEBSERVER\_PORT/changewifimode?mode=WIFI\_AP" | Switches the Wi-Fi operating mode of ESP32 | mode - either WIFI\_STA or WIFI\_AP |
-| http://\<ESP32\_IP>:\`WEBSERVER\_PORT/rebootdevice\` | Reboots ESP32 | None |
+| http://\<ESP32\_IP>:WEBSERVER\_PORT/ | Displays a greeting string | None |
+| http://\<ESP32\_IP>:WEBSERVER\_PORT/gettempandhum | Retrieves average temperature and humidity | None |
+| http://\<ESP32\_IP>:WEBSERVER\_PORT/settime?hour=0&min=0&sec=0&day=1&month=1&year=2022 | Sets the RTC time of ESP32 | If ESP32 is in WIFI\_STA mode, the time is updated from the NTP server. If in WIFI\_AP mode, specify hours, minutes, seconds, day, month, year in the request parameters |
+| http://\<ESP32\_IP>:WEBSERVER\_PORT/gettime | Gets the RTC time of ESP32 | None |
+| http://\<ESP32\_IP>:WEBSERVER\_PORT/data | Outputs time, temperature, and humidity starting from midnight in JSON format | None |
+| http://\<ESP32\_IP>:WEBSERVER\_PORT/setwifistaparam?ssid=MyWiFi&password=12345678 | Sets the SSID for WIFI\_STA mode and the password for both WIFI\_STA and WIFI\_AP modes | ssid - access point name, password - password |
+| http://\<ESP32\_IP>:WEBSERVER\_PORT/setlamptime?on=8&off=22 | Sets the on/off times (in hours) for the device connected to the relay | on - hour to turn on, off - hour to turn off |
+| http://\<ESP32\_IP>:WEBSERVER\_PORT/lampalwayson?on=0 | Checks if the device connected to the relay is constantly on | on=1 - allow constant operation, on=0 - disallow constant operation |
+| http://\<ESP32\_IP>:WEBSERVER\_PORT/getconfigvalues | Outputs the current configuration | None |
+| http://\<ESP32\_IP>:WEBSERVER\_PORT/changewifimode?mode=WIFI\_AP | Switches the Wi-Fi operating mode of ESP32 | mode - either WIFI\_STA or WIFI\_AP |
+| http://\<ESP32\_IP>:WEBSERVER\_PORT/rebootdevice | Reboots ESP32 | None |
 
 # Контроллер лампы SmartLampESP32
 
