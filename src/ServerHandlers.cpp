@@ -16,34 +16,20 @@ void HandleRoot()
 void HandleGetTempAndHum()
 {
     xSemaphoreTake(xMutexSensor, portMAX_DELAY);
-    Wire.begin(SDA_PIN, SCL_PIN);
-    switch (am2320.Read())
-    {
-    case 2:
+    auto measurements = GetMeasurementsFromSensor();
+    if (fabsf(measurements[0] - (-50.00f)) <= 0.00001f && fabsf(measurements[1] - (-60.00f)) <= 0.00001f)
         server.send(503, "text/html", "Error reading AM2320 sensor");
-        break;
-    case 1:
+    else if (fabsf(measurements[0] - (-50.00f)) <= 0.00001f && fabsf(measurements[1] - (-70.00f)) <= 0.00001f)
         server.send(503, "text/html", "AM2320 sensor offline");
-        break;
-    case 0:
+    else if (fabsf(measurements[0] - (-1000.00f)) <= 0.00001f && fabsf(measurements[1] - (-1000.00f)) <= 0.00001f)
+        server.send(503, "text/html", "AM2320 something unexpected happens");
+    else
     {
-        float tempTemp = 0, tempHum = 0;
-        int i = 0;
-        while (i < 3)
-        {
-            tempTemp += am2320.cTemp;
-            tempHum += am2320.Humidity;
-            i++;
-            delay(2000);
-        }
         Json measurementJson;
-        measurementJson.add("Temperature", tempTemp / i);
-        measurementJson.add("Humidity", tempHum / i);
+        measurementJson.add("Temperature", measurements[0]);
+        measurementJson.add("Humidity", measurements[1]);
         server.send(200, "application/json", measurementJson.toString());
-        break;
     }
-    }
-    Wire.end();
     xSemaphoreGive(xMutexSensor);
 }
 
