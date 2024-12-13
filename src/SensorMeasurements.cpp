@@ -6,6 +6,13 @@
 std::unique_ptr<float[]> GetMeasurementsFromSensor()
 {
     std::unique_ptr<float[]> array(new float[2]);
+    if(IS_TEST_MODE)
+    {
+        array[0] = random(-1.0f, 15.0f);
+        array[1] = random(-1.0f, 15.0f);
+        return array;  
+    }
+    
     AM2320 am2320(&Wire);
     Wire.begin(SDA_PIN, SCL_PIN);
     switch (am2320.Read())
