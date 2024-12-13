@@ -69,6 +69,8 @@ void ConfigWiFi(ConfigValues &config)
 
         Serial.println("Connected to the WiFi network");
         Serial.println(WiFi.localIP());
+        Serial.println(WiFi.macAddress());
+        
         ESP32Time rtcToWiFiStart;
         configTime(TIMEZONE * 3600, DAYLIGHTOFFSET, NTP_SERVER);
         struct tm timeinfo;
