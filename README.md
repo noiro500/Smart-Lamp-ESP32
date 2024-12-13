@@ -74,6 +74,7 @@ After uploading, a web server starts on port `WEBSERVER_PORT`, which accepts the
 | http://\<ESP32\_IP>:WEBSERVER\_PORT/changewifimode?mode=WIFI\_AP | Switches the Wi-Fi operating mode of ESP32 | mode - either WIFI\_STA or WIFI\_AP |
 | http://\<ESP32\_IP>:WEBSERVER\_PORT/rebootdevice | Reboots ESP32 | None |
 
+
 # Контроллер лампы SmartLampESP32
 
 Контроллер электронных устройств SmartLampESP32 представляет из себя устройство, которое может выполнять следующие действия:
