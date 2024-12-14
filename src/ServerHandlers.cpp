@@ -1,5 +1,4 @@
 #include "ServerHandlers.h"
-#include "WiFi_AP.h"
 #include "ConfigManager.h"
 #include "Json.h"
 #include "SensorMeasurements.h"

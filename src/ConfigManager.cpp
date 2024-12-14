@@ -1,9 +1,10 @@
 #include "ConfigManager.h"
-#include "WiFi_AP.h"
 #include "ESP32Time.h"
 #include "AM2320.h"
 
 Preferences preferences;
+DNSServer dnsServer;
+WebServer server(WEBSERVER_PORT);
 
 void SaveConfigToNVS(ConfigValues &config)
 {
