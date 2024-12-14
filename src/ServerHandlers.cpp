@@ -101,11 +101,11 @@ void HandleSetWiFiSTAParam()
         return;
     }
     xSemaphoreTake(xMutexConfig, portMAX_DELAY);
-    strcpy(config.WifiSsid, server.arg("ssid").c_str());
+    strcpy(config.WiFiSsid, server.arg("ssid").c_str());
     strcpy(config.WiFiPassword, server.arg("password").c_str());
     SaveConfigToNVS(config);
     xSemaphoreGive(xMutexConfig);
-    server.send(400, "text/html", "WiFi STA parameters are set:" + String(config.WifiSsid) + ", " + String(config.WiFiPassword));
+    server.send(400, "text/html", "WiFi STA parameters are set:" + String(config.WiFiSsid) + ", " + String(config.WiFiPassword));
     delay(5000);
     ESP.restart();
 }
@@ -184,10 +184,10 @@ void HandleChangeWiFiMode()
     }
 
     xSemaphoreTake(xMutexConfig, portMAX_DELAY);
-    strcpy(config.WifiMode, server.arg("mode").c_str());
+    strcpy(config.WiFiMode, server.arg("mode").c_str());
     SaveConfigToNVS(config);
     xSemaphoreGive(xMutexConfig);
-    server.send(200, "text/html", "Wifi mode is set to: " + String(config.WifiMode));
+    server.send(200, "text/html", "Wifi mode is set to: " + String(config.WiFiMode));
     delay(5000);
     ESP.restart();
 }

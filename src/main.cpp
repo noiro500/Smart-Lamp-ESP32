@@ -56,6 +56,6 @@ void setup()
 void loop()
 {
   server.handleClient();
-  if (strcmp(loadConfig.WifiMode, "WIFI_AP") == 0)
+  if (strcmp(loadConfig.WiFiMode, "WIFI_AP") == 0)
     dnsServer.processNextRequest();
 }
