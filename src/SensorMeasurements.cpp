@@ -12,7 +12,7 @@ std::unique_ptr<float[]> GetMeasurementsFromSensor()
         array[1] = random(-1.0f, 15.0f);
         return array;  
     }
-    
+
     AM2320 am2320(&Wire);
     Wire.begin(SDA_PIN, SCL_PIN);
     switch (am2320.Read())
