@@ -14,7 +14,7 @@ extern TaskHandle_t lampTaskHandle;
 extern TaskHandle_t wifiGuardTaskHandle;
 extern TaskHandle_t temperatureInHoursTaskHandle;
 extern int RelaylampPin;
-extern AM2320 am2320;
+//extern AM2320 am2320;
 extern ESP32Time rtc;
 extern Preferences preferences;
 
