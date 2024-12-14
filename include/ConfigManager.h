@@ -22,12 +22,12 @@ extern Preferences preferences;
 //Structure of Configuration
 typedef struct
 {
-    char WifiMode[9];
+    char WiFiMode[10];
     uint8_t SoftApIP[4];
     uint8_t SoftIpSubnetMask[4];
     char WiFiPassword[64];
     char SoftApSsid[32];
-    char WifiSsid[32];
+    char WiFiSsid[32];
     int LampAlwayseOn;
     int LampOnTimeHours;
     int LampOffTimeHours;
