@@ -7,7 +7,8 @@
 #include "AM2320.h"
 #include "ESP32Time.h"
 #include "GeneralParameters.h"
-#include <WebServer.h>
+#include "ESPAsyncWebServer.h"
+#include <AsyncTCP.h>
 #include <DNSServer.h>
 
 extern SemaphoreHandle_t xMutexConfig;
@@ -16,12 +17,10 @@ extern TaskHandle_t lampTaskHandle;
 extern TaskHandle_t wifiGuardTaskHandle;
 extern TaskHandle_t temperatureInHoursTaskHandle;
 extern int RelaylampPin;
-//extern AM2320 am2320;
 extern ESP32Time rtc;
 extern Preferences preferences;
 extern DNSServer dnsServer;
-extern WebServer server;
-
+extern AsyncWebServer server;
 // Структура конфигурации
 //Structure of Configuration
 typedef struct

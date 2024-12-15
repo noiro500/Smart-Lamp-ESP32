@@ -1,6 +1,7 @@
 #include "WorkTasks.h"
+#include "ConfigManager.h"
 
-void HandleRoot();
+void HandleRoot(AsyncWebServerRequest*);
 void HandleGetTempAndHum();
 void HandleSetTime();
 void HandleGetTime();

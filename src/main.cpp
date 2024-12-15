@@ -31,8 +31,8 @@ void setup()
 
   ConfigWiFi(loadConfig);
 
-  server.on("/", HandleRoot);
-  server.on("/gettempandhum", HandleGetTempAndHum);
+  server.on("/ip", HTTP_GET, HandleRoot);
+  /*server.on("/gettempandhum", HandleGetTempAndHum);
   server.on("/settime", HandleSetTime);
   server.on("/gettime", HandleGetTime);
   server.on("/data", HandleTemperatureInHours);
@@ -41,10 +41,10 @@ void setup()
   server.on("/lampalwayson", HandleLampOlwayseOn);
   server.on("/getconfigvalues", HandleGetConfigValues);
   server.on("/changewifimode", HandleChangeWiFiMode);
-  server.on("/rebootdevice", HandleRebootDevice);
+  server.on("/rebootdevice", HandleRebootDevice);*/
 
   server.begin();
-
+  
   xTaskCreatePinnedToCore(LampTask, "LampTask", 4096, NULL, 1, &lampTaskHandle, tskNO_AFFINITY);
   if (lampTaskHandle == NULL)
     Serial.println("Error creating LampTask");
@@ -55,7 +55,7 @@ void setup()
 
 void loop()
 {
-  server.handleClient();
+  //server.handleClient();
   if (strcmp(loadConfig.WiFiMode, "WIFI_AP") == 0)
     dnsServer.processNextRequest();
 }

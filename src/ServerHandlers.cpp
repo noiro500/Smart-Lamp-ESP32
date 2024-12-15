@@ -7,12 +7,12 @@
 ESP32Time rtc;
 ConfigValues config;
 
-void HandleRoot()
+ void HandleRoot(AsyncWebServerRequest *request)
 {
-    server.send(200, "text/html", GREETINGS);
+    request->send(200, "text/html", GREETINGS);
 }
 
-void HandleGetTempAndHum()
+/*void HandleGetTempAndHum()
 {
     xSemaphoreTake(xMutexSensor, portMAX_DELAY);
     auto measurements = GetMeasurementsFromSensor();
@@ -196,4 +196,4 @@ void HandleRebootDevice()
     server.send(200, "text/html", "Restart after 5 seconds");
     delay(5000);
     ESP.restart();
-}
+}*/

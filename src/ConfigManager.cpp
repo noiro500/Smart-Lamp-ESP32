@@ -4,7 +4,8 @@
 
 Preferences preferences;
 DNSServer dnsServer;
-WebServer server(WEBSERVER_PORT);
+//WebServer server(WEBSERVER_PORT);
+AsyncWebServer server(WEBSERVER_PORT);
 
 void SaveConfigToNVS(ConfigValues &config)
 {
