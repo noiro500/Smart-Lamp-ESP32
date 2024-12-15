@@ -2,13 +2,13 @@
 #include "ConfigManager.h"
 
 void HandleRoot(AsyncWebServerRequest*);
-void HandleGetTempAndHum();
-void HandleSetTime();
-void HandleGetTime();
-void HandleTemperatureInHours();
-void HandleSetWiFiSTAParam();
-void HandleSetLampTime();
-void HandleLampOlwayseOn();
-void HandleGetConfigValues();
-void HandleChangeWiFiMode();
-void HandleRebootDevice();
+void HandleGetTempAndHum(AsyncWebServerRequest*);
+void HandleSetTime(AsyncWebServerRequest*);
+void HandleGetTime(AsyncWebServerRequest*);
+void HandleTemperatureInHours(AsyncWebServerRequest*);
+void HandleSetWiFiSTAParam(AsyncWebServerRequest*);
+void HandleSetLampTime(AsyncWebServerRequest*);
+void HandleLampOlwayseOn(AsyncWebServerRequest*);
+void HandleGetConfigValues(AsyncWebServerRequest*);
+void HandleChangeWiFiMode(AsyncWebServerRequest*);
+void HandleRebootDevice(AsyncWebServerRequest*);

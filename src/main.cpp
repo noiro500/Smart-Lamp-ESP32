@@ -31,8 +31,8 @@ void setup()
 
   ConfigWiFi(loadConfig);
 
-  server.on("/ip", HTTP_GET, HandleRoot);
-  /*server.on("/gettempandhum", HandleGetTempAndHum);
+  server.on("/", HTTP_GET, HandleRoot);
+  server.on("/gettempandhum", HandleGetTempAndHum);
   server.on("/settime", HandleSetTime);
   server.on("/gettime", HandleGetTime);
   server.on("/data", HandleTemperatureInHours);
@@ -41,7 +41,7 @@ void setup()
   server.on("/lampalwayson", HandleLampOlwayseOn);
   server.on("/getconfigvalues", HandleGetConfigValues);
   server.on("/changewifimode", HandleChangeWiFiMode);
-  server.on("/rebootdevice", HandleRebootDevice);*/
+  server.on("/rebootdevice", HandleRebootDevice);
 
   server.begin();
   
