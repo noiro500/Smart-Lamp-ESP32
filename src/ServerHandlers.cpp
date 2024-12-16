@@ -9,7 +9,10 @@ ConfigValues config;
 
 void HandleRoot(AsyncWebServerRequest *request)
 {
-    request->send(200, "text/html", GREETINGS);
+    AsyncWebServerResponse *response=request->beginResponse(200, "text/html", GREETINGS);
+    response->addHeader("Hello", "World");
+    //request->send(200, "text/html", GREETINGS);
+    request->send(response);
 }
 
 
@@ -36,21 +39,18 @@ void HandleGetTempAndHum(AsyncWebServerRequest *request)
 void HandleSetTime(AsyncWebServerRequest *request)
 {
     const char *urlExample = "http://x.x.x.x:180/settime?hour=0&min=0&sec=0&day=1&month=1&year=2022";
-    if (WiFi.getMode() == WIFI_AP && request->args() == 0)
+    
+    if (WiFi.getMode() == WIFI_AP)
     {
-        request->send(400, "text/html", "Set time with example: " + String(urlExample));
-        return;
+        if (request->args() != 6)
+        {
+            request->send(400, "text/html", "Set time with example: " + String(urlExample));
+            return;
+        }
+        rtc.setTime(request->arg("hour").toInt(), request->arg("min").toInt(), request->arg("sec").toInt(), 
+                    request->arg("day").toInt(), request->arg("month").toInt(), request->arg("year").toInt());
     }
-    else if (WiFi.getMode() == WIFI_AP && request->args() != 6)
-    {
-        request->send(400, "text/html", "Set time with example: " + String(urlExample));
-        return;
-    }
-    else if (WiFi.getMode() == WIFI_AP && request->args() == 6)
-    {
-        rtc.setTime(request->arg("hour").toInt(), request->arg("min").toInt(), request->arg("sec").toInt(), request->arg("day").toInt(), request->arg("month").toInt(), request->arg("year").toInt());
-    }
-    if (WiFi.getMode() == WIFI_STA && WiFi.status() == WL_CONNECTED)
+    else if (WiFi.getMode() == WIFI_STA && WiFi.status() == WL_CONNECTED)
     {
         configTime(TIMEZONE * 3600, DAYLIGHTOFFSET, NTP_SERVER);
         struct tm timeinfo;
@@ -61,7 +61,6 @@ void HandleSetTime(AsyncWebServerRequest *request)
     }
     request->send(200, "text/html", "Time is set to: " + rtc.getDateTime(true));
 }
-
 void HandleGetTime(AsyncWebServerRequest *request)
 {
     request->send(200, "text/html", rtc.getDateTime(true));
