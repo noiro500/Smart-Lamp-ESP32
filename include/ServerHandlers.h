@@ -1,14 +1,14 @@
 #include "WorkTasks.h"
 #include "ConfigManager.h"
 
-void HandleRoot(AsyncWebServerRequest*);
-void HandleGetTempAndHum(AsyncWebServerRequest*);
-void HandleSetTime(AsyncWebServerRequest*);
-void HandleGetTime(AsyncWebServerRequest*);
-void HandleTemperatureInHours(AsyncWebServerRequest*);
-void HandleSetWiFiSTAParam(AsyncWebServerRequest*);
-void HandleSetLampTime(AsyncWebServerRequest*);
-void HandleLampOlwayseOn(AsyncWebServerRequest*);
-void HandleGetConfigValues(AsyncWebServerRequest*);
-void HandleChangeWiFiMode(AsyncWebServerRequest*);
-void HandleRebootDevice(AsyncWebServerRequest*);
+void HandleRoot(PsychicRequest*);
+void HandleGetTempAndHum(PsychicRequest*);
+void HandleSetTime(PsychicRequest*);
+void HandleGetTime(PsychicRequest*);
+void HandleTemperatureInHours(PsychicRequest*);
+void HandleSetWiFiSTAParam(PsychicRequest*);
+void HandleSetLampTime(PsychicRequest*);
+void HandleLampOlwayseOn(PsychicRequest*);
+void HandleGetConfigValues(PsychicRequest*);
+void HandleChangeWiFiMode(PsychicRequest*);
+void HandleRebootDevice(PsychicRequest*);

@@ -32,7 +32,7 @@ void setup()
   ConfigWiFi(loadConfig);
 
   server.on("/", HTTP_GET, HandleRoot);
-  server.on("/gettempandhum", HandleGetTempAndHum);
+  /*server.on("/gettempandhum", HandleGetTempAndHum);
   server.on("/settime", HandleSetTime);
   server.on("/gettime", HandleGetTime);
   server.on("/data", HandleTemperatureInHours);
@@ -41,9 +41,10 @@ void setup()
   server.on("/lampalwayson", HandleLampOlwayseOn);
   server.on("/getconfigvalues", HandleGetConfigValues);
   server.on("/changewifimode", HandleChangeWiFiMode);
-  server.on("/rebootdevice", HandleRebootDevice);
+  server.on("/rebootdevice", HandleRebootDevice);*/
 
-  server.begin();
+  //server.begin();
+  server.listen(180);
   
   xTaskCreatePinnedToCore(LampTask, "LampTask", 4096, NULL, 1, &lampTaskHandle, tskNO_AFFINITY);
   if (lampTaskHandle == NULL)
@@ -51,6 +52,7 @@ void setup()
   xTaskCreatePinnedToCore(TemperatureInHoursTask, "TemperatureInHoursTask", 4096, &temperatureInHours, 1, &temperatureInHoursTaskHandle, tskNO_AFFINITY);
   if (temperatureInHoursTaskHandle == NULL)
     Serial.println("Error creating TemperatureInHoursTask");
+    xTaskCreatePinnedToCore(TempAndHumCacheUpdateTask, "TempAndHumCacheUpdateTask", 4096, NULL, 1, NULL, tskNO_AFFINITY);
 }
 
 void loop()

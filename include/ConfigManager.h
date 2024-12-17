@@ -7,9 +7,10 @@
 #include "AM2320.h"
 #include "ESP32Time.h"
 #include "GeneralParameters.h"
-#include "ESPAsyncWebServer.h"
-#include <AsyncTCP.h>
+#include "PsychicHttp.h"
 #include <DNSServer.h>
+#include "Json.h"
+#include <memory>
 
 extern SemaphoreHandle_t xMutexConfig;
 extern SemaphoreHandle_t xMutexSensor;
@@ -20,7 +21,12 @@ extern int RelaylampPin;
 extern ESP32Time rtc;
 extern Preferences preferences;
 extern DNSServer dnsServer;
-extern AsyncWebServer server;
+extern PsychicHttpServer server;
+
+//extern char *tempAndHumcachedResponse;
+extern std::unique_ptr<char[]> tempAndHumcachedResponse;
+/*extern float latestTemperature;
+extern float latestHumidity;*/
 // Структура конфигурации
 //Structure of Configuration
 typedef struct
