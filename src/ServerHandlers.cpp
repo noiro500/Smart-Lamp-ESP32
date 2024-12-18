@@ -6,36 +6,17 @@
 ESP32Time rtc;
 ConfigValues config;
 
-void HandleRoot(PsychicRequest *request)
+void HandleRoot(AsyncWebServerRequest *request)
 {
     request->send(200, "text/html", GREETINGS);
 }
 
-void HandleGetTempAndHum(PsychicRequest *request)
+void HandleGetTempAndHum(AsyncWebServerRequest *request)
 {
-    // AsyncResponseStream *response = request->beginResponseStream("application/json");
-    /*xSemaphoreTake(xMutexSensor, portMAX_DELAY);
-    auto measurements = GetMeasurementsFromSensor();
-    xSemaphoreGive(xMutexSensor);*/
-    /*const float epsilon = 0.00001f;
-    if (fabsf(measurements[0] - (-50.00f)) <= epsilon && fabsf(measurements[1] - (-60.00f)) <= epsilon)
-        request->send(503, "text/html", "Error reading AM2320 sensor");
-    else if (fabsf(measurements[0] - (-50.00f)) <= epsilon && fabsf(measurements[1] - (-70.00f)) <= epsilon)
-        request->send(503, "text/html", "AM2320 sensor offline");
-    else if (fabsf(measurements[0] - (-1000.00f)) <= epsilon && fabsf(measurements[1] - (-1000.00f)) <= epsilon)
-        request->send(503, "text/html", "AM2320 something unexpected happens");
-    else*/
-    //{
-    /*Json measurementJson;
-    measurementJson.add("Temperature", measurements[0]);
-    measurementJson.add("Humidity", measurements[1]);*/
-    // Сбрасываем watchdog перед отправкой ответа
-    // request->send(200, "application/json", measurementJson.toString());
-    //}
     xSemaphoreTake(xMutexSensor, portMAX_DELAY);
-    if (tempAndHumcachedResponse)
+    if (tempAndHumCachedResponse)
     {
-        request->send(200, "application/json", tempAndHumcachedResponse.get());
+        request->send(200, "application/json", tempAndHumCachedResponse.get());
     }
     else
     {
@@ -44,7 +25,7 @@ void HandleGetTempAndHum(PsychicRequest *request)
     xSemaphoreGive(xMutexSensor);
 }
 
-void HandleSetTime(PsychicRequest *request)
+void HandleSetTime(AsyncWebServerRequest *request)
 {
     static constexpr const char *urlExample = "http://x.x.x.x:180/settime?hour=0&min=0&sec=0&day=1&month=1&year=2022";
 
@@ -75,7 +56,7 @@ void HandleGetTime(AsyncWebServerRequest *request)
     request->send(200, "text/html", rtc.getDateTime(true));
 }
 
-void HandleTemperatureInHours(PsychicRequest *request)
+void HandleTemperatureInHours(AsyncWebServerRequest *request)
 {
     xSemaphoreTake(xMutexConfig, portMAX_DELAY);
     Json returnJson;
@@ -95,7 +76,7 @@ void HandleTemperatureInHours(PsychicRequest *request)
     request->send(200, "application/json", returnJson.toString());
 }
 
-void HandleSetWiFiSTAParam(PsychicRequest *request)
+void HandleSetWiFiSTAParam(AsyncWebServerRequest *request)
 {
     static constexpr const char *urlExample = "http://x.x.x.x:180/setwifistaparam?ssid=MyWiFi&password=12345678";
     if (request->args() != 2)
@@ -118,7 +99,7 @@ void HandleSetWiFiSTAParam(PsychicRequest *request)
     ESP.restart();
 }
 
-void HandleSetLampTime(PsychicRequest *request)
+void HandleSetLampTime(AsyncWebServerRequest *request)
 {
     static constexpr const char *urlExample = "http://x.x.x.x:180/setlamptime?on=8&off=22";
     if (request->args() != 2)
@@ -139,7 +120,7 @@ void HandleSetLampTime(PsychicRequest *request)
     request->send(200, "text/html", "Lamp time is set to:\n" + String("On: ") + String(config.LampOnTimeHours) + " hours\n" + "Off: " + String(config.LampOffTimeHours) + " hours\n");
 }
 
-void HandleLampOlwayseOn(PsychicRequest *request)
+void HandleLampOlwayseOn(AsyncWebServerRequest *request)
 {
 
     static constexpr const char *urlExample = "http://x.x.x.x:180/lampalwayson?on=0";
@@ -160,7 +141,7 @@ void HandleLampOlwayseOn(PsychicRequest *request)
     xSemaphoreGive(xMutexConfig);
 }
 
-void HandleGetConfigValues(PsychicRequest *request)
+void HandleGetConfigValues(AsyncWebServerRequest *request)
 {
     if (!LoadConfigFromNVC(config))
     {
@@ -172,7 +153,7 @@ void HandleGetConfigValues(PsychicRequest *request)
     request->send(200, "text/html", configString.get());
 }
 
-void HandleChangeWiFiMode(PsychicRequest *request)
+void HandleChangeWiFiMode(AsyncWebServerRequest *request)
 {
     static constexpr const char *urlExample = "http://x.x.x.x:180/changewifimode?mode=WIFI_AP";
     if (request->args() != 1)
@@ -201,7 +182,7 @@ void HandleChangeWiFiMode(PsychicRequest *request)
     ESP.restart();
 }
 
-void HandleRebootDevice(PsychicRequest *request)
+void HandleRebootDevice(AsyncWebServerRequest *request)
 {
     request->send(200, "text/html", "Restart after 5 seconds");
     delay(5000);

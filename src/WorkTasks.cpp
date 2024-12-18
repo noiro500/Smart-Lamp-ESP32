@@ -10,9 +10,7 @@ TaskHandle_t wifiGuardTaskHandle;
 TaskHandle_t temperatureInHoursTaskHandle;
 int RelaylampPin = RELAY_LAMP_PIN;
 TempAndHumInHours temperatureInHours;
-std::unique_ptr<char[]> tempAndHumcachedResponse;
-//char *tempAndHumcachedResponse;
-
+std::unique_ptr<char[]> tempAndHumCachedResponse;
 
 void LampTask(void *pvParameters)
 {
@@ -113,21 +111,21 @@ void TempAndHumCacheUpdateTask(void *pvParameters)
     const float epsilon = 0.00001f;
     while (true)
     {
-        tempAndHumcachedResponse = std::make_unique<char[]>(50); 
         xSemaphoreTake(xMutexSensor, portMAX_DELAY);
+        tempAndHumCachedResponse = std::make_unique<char[]>(50); 
         auto measurements = GetMeasurementsFromSensor();
         if (fabsf(measurements[0] - (-50.00f)) <= epsilon && fabsf(measurements[1] - (-60.00f)) <= epsilon)
-             strcpy(tempAndHumcachedResponse.get(), "Error reading AM2320 sensor");
+             strcpy(tempAndHumCachedResponse.get(), "Error reading AM2320 sensor");
         else if (fabsf(measurements[0] - (-50.00f)) <= epsilon && fabsf(measurements[1] - (-70.00f)) <= epsilon)
-            strcpy(tempAndHumcachedResponse.get(), "AM2320 sensor offline");
+            strcpy(tempAndHumCachedResponse.get(), "AM2320 sensor offline");
         else if (fabsf(measurements[0] - (-1000.00f)) <= epsilon && fabsf(measurements[1] - (-1000.00f)) <= epsilon)
-            strcpy(tempAndHumcachedResponse.get(), "AM2320 something unexpected happens");
+            strcpy(tempAndHumCachedResponse.get(), "AM2320 something unexpected happens");
         else
         {
             Json measurementJson;
             measurementJson.add("Temperature", measurements[0]);
             measurementJson.add("Humidity", measurements[1]);
-            strcpy(tempAndHumcachedResponse.get(), measurementJson.toString().c_str());
+            strcpy(tempAndHumCachedResponse.get(), measurementJson.toString().c_str());
             xSemaphoreGive(xMutexSensor);
             vTaskDelay(pdMS_TO_TICKS(2000));
         }
