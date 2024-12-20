@@ -4,7 +4,7 @@
 
 Preferences preferences;
 DNSServer dnsServer;
-//WebServer server(WEBSERVER_PORT);
+// WebServer server(WEBSERVER_PORT);
 AsyncWebServer server(WEBSERVER_PORT);
 
 void SaveConfigToNVS(ConfigValues &config)
@@ -42,7 +42,7 @@ void ConfigWiFi(ConfigValues &config)
         WiFi.softAP(config.SoftApSsid, config.WiFiPassword);
         Serial.println("AP IP address: " + apIP.toString());
         Serial.println("SoftApSsid: " + String(config.SoftApSsid));
-        
+
         if (!dnsServer.start(53, "*", apIP))
         {
             Serial.println("DHCP server failed to start");
@@ -57,7 +57,11 @@ void ConfigWiFi(ConfigValues &config)
         /*Automatically try to reconnect when connection is lost*/
         /*Автоматически пытаемся переподключиться при потере соединения*/
         WiFi.setAutoReconnect(true);
-        WiFi.begin((strncat(config.WiFiSsid, "\0", sizeof(config.WiFiSsid)-1)), strncat(config.WiFiPassword, "\0", sizeof(config.WiFiPassword)-1));
+        if (!strlen(config.WiFiSsid) < sizeof(config.WiFiSsid))
+            strlcat(config.WiFiSsid, "\0", sizeof(config.WiFiSsid));
+        if(!strlen(config.WiFiPassword) < sizeof(config.WiFiPassword))
+            strlcat(config.WiFiPassword, "\0", sizeof(config.WiFiPassword));
+        WiFi.begin(config.WiFiSsid, config.WiFiPassword);
         while (WiFi.status() != WL_CONNECTED)
         {
             delay(500);

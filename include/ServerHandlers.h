@@ -11,4 +11,6 @@ void HandleSetLampTime(AsyncWebServerRequest*);
 void HandleLampOlwayseOn(AsyncWebServerRequest*);
 void HandleGetConfigValues(AsyncWebServerRequest*);
 void HandleChangeWiFiMode(AsyncWebServerRequest*);
+void HandleChangePassword(AsyncWebServerRequest*);
+void HandleChangeConfigValues(AsyncWebServerRequest*);
 void HandleRebootDevice(AsyncWebServerRequest*);
