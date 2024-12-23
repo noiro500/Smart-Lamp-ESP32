@@ -11,6 +11,16 @@ void HandleRoot(AsyncWebServerRequest *request)
     request->send(200, "text/html", GREETINGS);
 }
 
+void HandleFind(AsyncWebServerRequest *request)
+{
+    Json result;
+    result.add("IP", WiFi.localIP().toString());
+    result.add("Port", WEBSERVER_PORT);
+    result.add("Message", ("ESP32_" + WiFi.macAddress()));
+    request->send(200, "application/json", result.toString());
+    result.clear();
+}
+
 void HandleGetTempAndHum(AsyncWebServerRequest *request)
 {
     xSemaphoreTake(xMutexSensor, portMAX_DELAY);
@@ -219,7 +229,7 @@ void HandleChangeConfigValues(AsyncWebServerRequest *request)
            &softIpSubnetMask[0], &softIpSubnetMask[1], &softIpSubnetMask[2], &softIpSubnetMask[3],
            wifiPassword, softApSsid, wifiSsid,
            &lampAlwayseOn, &lampOnTimeHours, &lampOffTimeHours);
-          
+
     strlcpy(config.WiFiMode, wifiMode, sizeof(config.WiFiMode));
     memcpy(config.SoftApIP, softApIP, sizeof(config.SoftApIP));
     memcpy(config.SoftIpSubnetMask, softIpSubnetMask, sizeof(config.SoftIpSubnetMask));

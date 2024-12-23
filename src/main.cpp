@@ -31,7 +31,8 @@ void setup()
 
   ConfigWiFi(loadConfig);
 
-  server.on("/", HTTP_GET, HandleRoot);
+  server.on("/", HandleRoot);
+  server.on("/find", HandleFind);
   server.on("/gettempandhum", HandleGetTempAndHum);
   server.on("/settime", HandleSetTime);
   server.on("/gettime", HandleGetTime);

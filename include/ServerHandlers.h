@@ -2,6 +2,7 @@
 #include "ConfigManager.h"
 
 void HandleRoot(AsyncWebServerRequest*);
+void HandleFind(AsyncWebServerRequest*);
 void HandleGetTempAndHum(AsyncWebServerRequest*);
 void HandleSetTime(AsyncWebServerRequest*);
 void HandleGetTime(AsyncWebServerRequest*);
