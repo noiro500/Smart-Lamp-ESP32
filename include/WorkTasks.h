@@ -1,4 +1,4 @@
-#ifndef WORK_TASKS_H
+#pragma once
 #define WORK_TASKS_H
 
 #include <freertos/FreeRTOS.h>
@@ -8,5 +8,3 @@
 void LampTask(void *pvParameters);
 void TemperatureInHoursTask(void *pvParameters);
 void TempAndHumCacheUpdateTask(void *pvParameters);
-
-#endif

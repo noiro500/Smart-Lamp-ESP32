@@ -1,4 +1,4 @@
-#ifndef CONFIG_MANAGER_H
+#pragma once
 #define CONFIG_MANAGER_H
 
 #include <Arduino.h>
@@ -54,4 +54,3 @@ void SaveConfigToNVS(ConfigValues &config);
 bool LoadConfigFromNVC(ConfigValues &);
 void ConfigWiFi(ConfigValues &);
 void PrepareConfigString(const ConfigValues &, std::unique_ptr<char[]> &);
-#endif // CONFIG_MANAGER_H
