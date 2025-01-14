@@ -52,7 +52,7 @@ Open the file `GeneralParameters.h` and configure the default parameters:
 #define GREETINGS "<h1>ESP32 Cactus Lamp</h1>"      // Message when accessing http://<ESP32_IP>:WEBSERVER_PORT/
 ```
 
-Upload the code to your ESP32 board.
+Upload the code to your ESP32 board. **Important:** Before downloading, be sure to clear the ESP32 flash memory.
 
 ### Usage
 
@@ -128,7 +128,7 @@ After uploading, a web server starts on port `WEBSERVER_PORT`, which accepts the
 #define GREETINGS "<h1>ESP32 Cactus Lamp</h1>"      //Сообщение при обращении к http://<IP_ESP32>:WEBSERVER_PORT/
 ```
 
-Загрузите код в плату ESP32
+Загрузите код в плату ESP32. **Важно**: перед загрузкой обязательно очистите flash память ESP32.
 
 ### Использование
 

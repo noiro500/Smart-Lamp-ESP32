@@ -1,56 +1,55 @@
 #include "ServerHandlers.h"
-#include "WiFi_AP.h"
 #include "ConfigManager.h"
-#include "Json.h"
 #include "SensorMeasurements.h"
 
-AM2320 am2320(&Wire);
+// AM2320 am2320(&Wire);
 ESP32Time rtc;
 ConfigValues config;
 
-void HandleRoot()
+void HandleRoot(AsyncWebServerRequest *request)
 {
-    server.send(200, "text/html", GREETINGS);
+    request->send(200, "text/html", GREETINGS);
 }
 
-void HandleGetTempAndHum()
+void HandleFind(AsyncWebServerRequest *request)
+{
+    Json result;
+    result.add("IP", WiFi.localIP().toString());
+    result.add("Port", WEBSERVER_PORT);
+    result.add("DeviceName", ("ESP32_" + WiFi.macAddress()));
+    request->send(200, "application/json", result.toString());
+    result.clear();
+}
+
+void HandleGetTempAndHum(AsyncWebServerRequest *request)
 {
     xSemaphoreTake(xMutexSensor, portMAX_DELAY);
-    auto measurements = GetMeasurementsFromSensor();
-    if (fabsf(measurements[0] - (-50.00f)) <= 0.00001f && fabsf(measurements[1] - (-60.00f)) <= 0.00001f)
-        server.send(503, "text/html", "Error reading AM2320 sensor");
-    else if (fabsf(measurements[0] - (-50.00f)) <= 0.00001f && fabsf(measurements[1] - (-70.00f)) <= 0.00001f)
-        server.send(503, "text/html", "AM2320 sensor offline");
-    else if (fabsf(measurements[0] - (-1000.00f)) <= 0.00001f && fabsf(measurements[1] - (-1000.00f)) <= 0.00001f)
-        server.send(503, "text/html", "AM2320 something unexpected happens");
+    if (tempAndHumCachedResponse)
+    {
+        request->send(200, "application/json", tempAndHumCachedResponse.get());
+    }
     else
     {
-        Json measurementJson;
-        measurementJson.add("Temperature", measurements[0]);
-        measurementJson.add("Humidity", measurements[1]);
-        server.send(200, "application/json", measurementJson.toString());
+        request->send(500, "application/json", "Error: No data available");
     }
     xSemaphoreGive(xMutexSensor);
 }
 
-void HandleSetTime()
+void HandleSetTime(AsyncWebServerRequest *request)
 {
-    const char *urlExample = "http://x.x.x.x:180/settime?hour=0&min=0&sec=0&day=1&month=1&year=2022";
-    if (WiFi.getMode() == WIFI_AP && server.args() == 0)
+    static constexpr const char *urlExample = "http://x.x.x.x:180/settime?hour=0&min=0&sec=0&day=1&month=1&year=2022";
+
+    if (WiFi.getMode() == WIFI_AP)
     {
-        server.send(400, "text/html", "Set time with example: " + String(urlExample));
-        return;
+        if (request->args() != 6)
+        {
+            request->send(400, "text/plain", "Set time with example: " + String(urlExample));
+            return;
+        }
+        rtc.setTime(request->arg("hour").toInt(), request->arg("min").toInt(), request->arg("sec").toInt(),
+                    request->arg("day").toInt(), request->arg("month").toInt(), request->arg("year").toInt());
     }
-    else if (WiFi.getMode() == WIFI_AP && server.args() != 6)
-    {
-        server.send(400, "text/html", "Set time with example: " + String(urlExample));
-        return;
-    }
-    else if (WiFi.getMode() == WIFI_AP && server.args() == 6)
-    {
-        rtc.setTime(server.arg("hour").toInt(), server.arg("min").toInt(), server.arg("sec").toInt(), server.arg("day").toInt(), server.arg("month").toInt(), server.arg("year").toInt());
-    }
-    if (WiFi.getMode() == WIFI_STA && WiFi.status() == WL_CONNECTED)
+    else if (WiFi.getMode() == WIFI_STA && WiFi.status() == WL_CONNECTED)
     {
         configTime(TIMEZONE * 3600, DAYLIGHTOFFSET, NTP_SERVER);
         struct tm timeinfo;
@@ -59,15 +58,15 @@ void HandleSetTime()
             rtc.setTimeStruct(timeinfo);
         }
     }
-    server.send(200, "text/html", "Time is set to: " + rtc.getDateTime(true));
+    request->send(200, "text/plain", "Time is set to: " + rtc.getDateTime(true));
 }
 
-void HandleGetTime()
+void HandleGetTime(AsyncWebServerRequest *request)
 {
-    server.send(200, "text/html", rtc.getDateTime(true));
+    request->send(200, "text/plain", rtc.getDateTime(true));
 }
 
-void HandleTemperatureInHours()
+void HandleTemperatureInHours(AsyncWebServerRequest *request)
 {
     xSemaphoreTake(xMutexConfig, portMAX_DELAY);
     Json returnJson;
@@ -84,117 +83,171 @@ void HandleTemperatureInHours()
     returnJson.add("temperature", temperaturesJsonArray);
     returnJson.add("humidity", humidityJsonArray);
     xSemaphoreGive(xMutexConfig);
-    server.send(200, "application/json", returnJson.toString());
+    request->send(200, "application/json", returnJson.toString());
 }
 
-void HandleSetWiFiSTAParam()
+void HandleSetWiFiSTAParam(AsyncWebServerRequest *request)
 {
-    const char *urlExample = "http://x.x.x.x:180/setwifistaparam?ssid=MyWiFi&password=12345678";
-    if (server.args() != 2)
+    static constexpr const char *urlExample = "http://x.x.x.x:180/setwifistaparam?ssid=MyWiFi&password=12345678";
+    if (request->args() != 2)
     {
-        server.send(400, "text/html", "Set WiFi STA parameters with example: " + String(urlExample));
+        request->send(400, "text/plain", "Set WiFi STA parameters with example: " + String(urlExample));
         return;
     }
     if (!LoadConfigFromNVC(config))
     {
-        server.send(500, "text/html", "Unable to load config from NVS");
+        request->send(500, "text/plain", "Unable to load config from NVS");
         return;
     }
     xSemaphoreTake(xMutexConfig, portMAX_DELAY);
-    strcpy(config.WiFiSsid, server.arg("ssid").c_str());
-    strcpy(config.WiFiPassword, server.arg("password").c_str());
+    strlcpy(config.WiFiSsid, request->arg("ssid").c_str(), sizeof(config.WiFiSsid));
+    strlcpy(config.WiFiPassword, request->arg("password").c_str(), sizeof(config.WiFiPassword));
     SaveConfigToNVS(config);
     xSemaphoreGive(xMutexConfig);
-    server.send(400, "text/html", "WiFi STA parameters are set:" + String(config.WiFiSsid) + ", " + String(config.WiFiPassword));
+    request->send(200, "text/plain", "WiFi STA parameters are set:" + String(config.WiFiSsid) + ", " + String(config.WiFiPassword));
     delay(5000);
     ESP.restart();
 }
 
-void HandleSetLampTime()
+void HandleSetLampTime(AsyncWebServerRequest *request)
 {
-    const char *urlExample = "http://x.x.x.x:180/setlamptime?on=8&off=22";
-    if (server.args() != 2)
+    static constexpr const char *urlExample = "http://x.x.x.x:180/setlamptime?on=8&off=22";
+    if (request->args() != 2)
     {
-        server.send(400, "text/html", "Set on/off time with example: " + String(urlExample));
+        request->send(400, "text/plain", "Set on/off time with example: " + String(urlExample));
         return;
     }
     if (!LoadConfigFromNVC(config))
     {
-        server.send(500, "text/html", "Unable to load config from NVS");
+        request->send(500, "text/plain", "Unable to load config from NVS");
         return;
     }
     xSemaphoreTake(xMutexConfig, portMAX_DELAY);
-    config.LampOnTimeHours = server.arg("on").toInt();
-    config.LampOffTimeHours = server.arg("off").toInt();
+    config.LampOnTimeHours = request->arg("on").toInt();
+    config.LampOffTimeHours = request->arg("off").toInt();
     SaveConfigToNVS(config);
     xSemaphoreGive(xMutexConfig);
-    server.send(200, "text/html", "Lamp time is set to:\n" + String("On: ") + String(config.LampOnTimeHours) + " hours\n" + "Off: " + String(config.LampOffTimeHours) + " hours\n");
+    request->send(200, "text/plain", "Lamp time is set to:\n" + String("On: ") + String(config.LampOnTimeHours) + " hours\n" + "Off: " + String(config.LampOffTimeHours) + " hours\n");
 }
 
-void HandleLampOlwayseOn()
+void HandleLampOlwayseOn(AsyncWebServerRequest *request)
 {
 
-    const char *urlExample = "http://x.x.x.x:180/lampalwayson?on=0";
-    if (server.args() != 1)
+    static constexpr const char *urlExample = "http://x.x.x.x:180/lampalwayson?on=0";
+    if (request->args() != 1)
     {
-        server.send(400, "text/html", "Set parameter with example: " + String(urlExample));
+        request->send(400, "text/plain", "Set parameter with example: " + String(urlExample));
         return;
     }
     if (!LoadConfigFromNVC(config))
     {
-        server.send(500, "text/html", "Unable to load config from NVS");
+        request->send(500, "text/plain", "Unable to load config from NVS");
         return;
     }
     xSemaphoreTake(xMutexConfig, portMAX_DELAY);
-    config.LampAlwayseOn = server.arg("on").toInt();
+    config.LampAlwayseOn = request->arg("on").toInt();
     SaveConfigToNVS(config);
-    server.send(200, "text/html", "Lamp alwayse on is set to: " + String(config.LampAlwayseOn));
+    request->send(200, "text/plain", "Lamp alwayse on is set to: " + String(config.LampAlwayseOn));
     xSemaphoreGive(xMutexConfig);
 }
 
-void HandleGetConfigValues()
+void HandleGetConfigValues(AsyncWebServerRequest *request)
 {
     if (!LoadConfigFromNVC(config))
     {
-        server.send(500, "text/html", "Unable to load config from NVS");
+        request->send(500, "text/plain", "Unable to load config from NVS");
         return;
     }
     std::unique_ptr<char[]> configString;
     PrepareConfigString(config, configString);
-    server.send(200, "text/html", configString.get());
+    request->send(200, "text/plain", configString.get());
 }
 
-void HandleChangeWiFiMode()
+void HandleChangeWiFiMode(AsyncWebServerRequest *request)
 {
-    const char *urlExample = "http://x.x.x.x:180/changewifimode?mode=WIFI_AP";
-    if (server.args() != 1)
+    static constexpr const char *urlExample = "http://x.x.x.x:180/changewifimode?mode=WIFI_AP";
+    if (request->args() != 1)
     {
-        server.send(400, "text/html", "server.args() != 1 Set parameter only WIFI_STA or WIFI_AP with example: " + String(urlExample));
+        request->send(400, "text/plain", "server.args() != 1 Set parameter only WIFI_STA or WIFI_AP with example: " + String(urlExample));
         return;
     }
-    if (server.arg("mode") != String("WIFI_STA") && server.arg("mode") != String("WIFI_AP"))
+    const String &mode = request->arg("mode");
+    if (mode != "WIFI_STA" && mode != "WIFI_AP")
     {
-        server.send(400, "text/html", "Set parameter only WIFI_STA or WIFI_AP with example: " + String(urlExample));
+        request->send(400, "text/plain", "Set parameter only WIFI_STA or WIFI_AP with example: " + String(urlExample));
         return;
     }
     if (!LoadConfigFromNVC(config))
     {
-        server.send(500, "text/html", "Unable to load config from NVS");
+        request->send(500, "text/plain", "Unable to load config from NVS");
         return;
     }
 
     xSemaphoreTake(xMutexConfig, portMAX_DELAY);
-    strcpy(config.WiFiMode, server.arg("mode").c_str());
+    strlcpy(config.WiFiMode, mode.c_str(), sizeof(config.WiFiMode));
     SaveConfigToNVS(config);
     xSemaphoreGive(xMutexConfig);
-    server.send(200, "text/html", "Wifi mode is set to: " + String(config.WiFiMode));
+    request->send(200, "text/plain", "Wifi mode is set to: " + String(config.WiFiMode));
     delay(5000);
     ESP.restart();
 }
 
-void HandleRebootDevice()
+void HandleChangePassword(AsyncWebServerRequest *request)
 {
-    server.send(200, "text/html", "Restart after 5 seconds");
+    if (!request->hasParam("body", true))
+    {
+        request->send(400, "text/plain", "Bad Request: Body is missing");
+        return;
+    }
+    if (!LoadConfigFromNVC(config))
+    {
+        request->send(500, "text/plain", "Unable to load config from NVS");
+        return;
+    }
+    String body = request->getParam("body", true)->value();
+    xSemaphoreTake(xMutexConfig, portMAX_DELAY);
+    strlcpy(config.WiFiPassword, body.c_str(), sizeof(config.WiFiPassword));
+    SaveConfigToNVS(config);
+    xSemaphoreGive(xMutexConfig);
+}
+
+void HandleChangeConfigValues(AsyncWebServerRequest *request)
+{
+    if (!request->hasParam("body", true))
+    {
+        request->send(400, "text/plain", "Bad Request: Body is missing");
+        return;
+    }
+    String body = request->getParam("body", true)->value();
+    int lampAlwayseOn, lampOnTimeHours, lampOffTimeHours;
+    char wifiMode[10], wifiPassword[64], softApSsid[32], wifiSsid[32];
+    uint8_t softApIP[4], softIpSubnetMask[4];
+    sscanf(body.c_str(),
+           "WiFiMode=%9s&SoftApIP=%hhu.%hhu.%hhu.%hhu&SoftIpSubnetMask=%hhu.%hhu.%hhu.%hhu&WiFiPassword=%63s&SoftApSsid=%31s&WiFiSsid=%31s&LampAlwayseOn=%d&LampOnTimeHours=%d&LampOffTimeHours=%d",
+           wifiMode,
+           &softApIP[0], &softApIP[1], &softApIP[2], &softApIP[3],
+           &softIpSubnetMask[0], &softIpSubnetMask[1], &softIpSubnetMask[2], &softIpSubnetMask[3],
+           wifiPassword, softApSsid, wifiSsid,
+           &lampAlwayseOn, &lampOnTimeHours, &lampOffTimeHours);
+
+    strlcpy(config.WiFiMode, wifiMode, sizeof(config.WiFiMode));
+    memcpy(config.SoftApIP, softApIP, sizeof(config.SoftApIP));
+    memcpy(config.SoftIpSubnetMask, softIpSubnetMask, sizeof(config.SoftIpSubnetMask));
+    strlcpy(config.WiFiPassword, wifiPassword, sizeof(config.WiFiPassword));
+    strlcpy(config.SoftApSsid, softApSsid, sizeof(config.SoftApSsid));
+    strlcpy(config.WiFiSsid, wifiSsid, sizeof(config.WiFiSsid));
+    config.LampAlwayseOn = lampAlwayseOn;
+    config.LampOnTimeHours = lampOnTimeHours;
+    config.LampOffTimeHours = lampOffTimeHours;
+    xSemaphoreTake(xMutexConfig, portMAX_DELAY);
+    SaveConfigToNVS(config);
+    xSemaphoreGive(xMutexConfig);
+    request->send(200, "text/plain", "Configuration updated successfully");
+}
+
+void HandleRebootDevice(AsyncWebServerRequest *request)
+{
+    request->send(200, "text/html", "Restart after 5 seconds");
     delay(5000);
     ESP.restart();
 }

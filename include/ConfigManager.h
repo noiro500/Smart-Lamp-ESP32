@@ -1,4 +1,4 @@
-#ifndef CONFIG_MANAGER_H
+#pragma once
 #define CONFIG_MANAGER_H
 
 #include <Arduino.h>
@@ -7,6 +7,11 @@
 #include "AM2320.h"
 #include "ESP32Time.h"
 #include "GeneralParameters.h"
+#include "ESPAsyncWebServer.h"
+#include <DNSServer.h>
+#include "Json.h"
+#include <memory>
+#include <AsyncTCP.h>
 
 extern SemaphoreHandle_t xMutexConfig;
 extern SemaphoreHandle_t xMutexSensor;
@@ -14,9 +19,12 @@ extern TaskHandle_t lampTaskHandle;
 extern TaskHandle_t wifiGuardTaskHandle;
 extern TaskHandle_t temperatureInHoursTaskHandle;
 extern int RelaylampPin;
-extern AM2320 am2320;
 extern ESP32Time rtc;
 extern Preferences preferences;
+extern DNSServer dnsServer;
+extern AsyncWebServer server;
+
+extern std::unique_ptr<char[]> tempAndHumCachedResponse;
 
 // Структура конфигурации
 //Structure of Configuration
@@ -46,4 +54,3 @@ void SaveConfigToNVS(ConfigValues &config);
 bool LoadConfigFromNVC(ConfigValues &);
 void ConfigWiFi(ConfigValues &);
 void PrepareConfigString(const ConfigValues &, std::unique_ptr<char[]> &);
-#endif // CONFIG_MANAGER_H

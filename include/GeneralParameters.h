@@ -20,4 +20,4 @@
 #define SCL_PIN 23
 #define RELAY_LAMP_PIN 22                           //Lamp relay connection pin
 #define WEBSERVER_PORT 180                          //Webserver port
-#define GREETINGS "<h1>ESP32 Cactus Lamp</h1>"      //Return message http://<IP_ESP32>:WEBSERVER_PORT/
+#define GREETINGS "<h1>ESP32 Cactus Lamp</h1>"      //Return message 

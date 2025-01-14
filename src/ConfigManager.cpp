@@ -1,9 +1,11 @@
 #include "ConfigManager.h"
-#include "WiFi_AP.h"
 #include "ESP32Time.h"
 #include "AM2320.h"
 
 Preferences preferences;
+DNSServer dnsServer;
+// WebServer server(WEBSERVER_PORT);
+AsyncWebServer server(WEBSERVER_PORT);
 
 void SaveConfigToNVS(ConfigValues &config)
 {
@@ -38,10 +40,10 @@ void ConfigWiFi(ConfigValues &config)
         WiFi.softAPConfig(apIP, apIP, netMask);
         Serial.println("Setting up WiFi Access Point...");
         WiFi.softAP(config.SoftApSsid, config.WiFiPassword);
-        Serial.println("AP IP address: " + String(apIP.toString()));
+        Serial.println("AP IP address: " + apIP.toString());
         Serial.println("SoftApSsid: " + String(config.SoftApSsid));
-        bool dhcp = dnsServer.start(53, "*", apIP);
-        if (!dhcp)
+
+        if (!dnsServer.start(53, "*", apIP))
         {
             Serial.println("DHCP server failed to start");
             delay(5000);
@@ -55,7 +57,11 @@ void ConfigWiFi(ConfigValues &config)
         /*Automatically try to reconnect when connection is lost*/
         /*Автоматически пытаемся переподключиться при потере соединения*/
         WiFi.setAutoReconnect(true);
-        WiFi.begin((strcat(config.WiFiSsid, "\0")), strcat(config.WiFiPassword, "\0"));
+        if (!strlen(config.WiFiSsid) < sizeof(config.WiFiSsid))
+            strlcat(config.WiFiSsid, "\0", sizeof(config.WiFiSsid));
+        if(!strlen(config.WiFiPassword) < sizeof(config.WiFiPassword))
+            strlcat(config.WiFiPassword, "\0", sizeof(config.WiFiPassword));
+        WiFi.begin(config.WiFiSsid, config.WiFiPassword);
         while (WiFi.status() != WL_CONNECTED)
         {
             delay(500);
