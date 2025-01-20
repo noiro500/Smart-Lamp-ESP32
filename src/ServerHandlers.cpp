@@ -3,7 +3,7 @@
 #include "SensorMeasurements.h"
 
 // AM2320 am2320(&Wire);
-ESP32Time rtc;
+//ESP32Time rtc;
 ConfigValues config;
 
 void HandleRoot(AsyncWebServerRequest *request)

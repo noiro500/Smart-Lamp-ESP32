@@ -1,6 +1,6 @@
 #include "WorkTasks.h"
 #include "ConfigManager.h"
-#include "ESP32Time.h"
+//#include "ESP32Time.h"
 #include "SensorMeasurements.h"
 
 SemaphoreHandle_t xMutexConfig = xSemaphoreCreateMutex();
@@ -53,7 +53,7 @@ void LampTask(void *pvParameters)
 void TemperatureInHoursTask(void *pvParameters)
 {
     TempAndHumInHours *tempAndHumInHours = (TempAndHumInHours *)pvParameters;
-    ESP32Time rtc;
+    //ESP32Time rtc;
     int lastUpdateHour = -1;
     /*Getting the initial time for vTaskDelayUntil*/
     /*Получение начального времени для vTaskDelayUntil*/

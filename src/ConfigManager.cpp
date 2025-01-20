@@ -1,11 +1,12 @@
 #include "ConfigManager.h"
-#include "ESP32Time.h"
+//#include "ESP32Time.h"
 #include "AM2320.h"
 
 Preferences preferences;
 DNSServer dnsServer;
 // WebServer server(WEBSERVER_PORT);
 AsyncWebServer server(WEBSERVER_PORT);
+ESP32Time rtc;
 
 void SaveConfigToNVS(ConfigValues &config)
 {
@@ -72,12 +73,13 @@ void ConfigWiFi(ConfigValues &config)
         Serial.println(WiFi.localIP());
         Serial.println(WiFi.macAddress());
 
-        ESP32Time rtcToWiFiStart;
+        //ESP32Time rtcToWiFiStart;
         configTime(TIMEZONE * 3600, DAYLIGHTOFFSET, NTP_SERVER);
         struct tm timeinfo;
         if (getLocalTime(&timeinfo))
         {
-            rtcToWiFiStart.setTimeStruct(timeinfo);
+            //rtcToWiFiStart.setTimeStruct(timeinfo);
+            rtc.setTimeStruct(timeinfo);
         }
         Serial.printf("%s\n", (rtc.getDateTime(true)).c_str());
         delay(3000);
