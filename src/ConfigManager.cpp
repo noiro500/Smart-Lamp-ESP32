@@ -6,7 +6,7 @@ Preferences preferences;
 DNSServer dnsServer;
 // WebServer server(WEBSERVER_PORT);
 AsyncWebServer server(WEBSERVER_PORT);
-ESP32Time rtc;
+ESP32Time rtc (3600*TIMEZONE);
 
 void SaveConfigToNVS(ConfigValues &config)
 {
