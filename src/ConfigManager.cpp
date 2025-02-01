@@ -1,5 +1,5 @@
 #include "ConfigManager.h"
-//#include "ESP32Time.h"
+// #include "ESP32Time.h"
 #include "AM2320.h"
 
 Preferences preferences;
@@ -58,12 +58,11 @@ void ConfigWiFi(ConfigValues &config)
         /*Automatically try to reconnect when connection is lost*/
         /*Автоматически пытаемся переподключиться при потере соединения*/
         WiFi.setAutoReconnect(true);
-        if (!strlen(config.WiFiSsid) < sizeof(config.WiFiSsid))
-            strlcat(config.WiFiSsid, "\0", sizeof(config.WiFiSsid));
-        if(!strlen(config.WiFiPassword) < sizeof(config.WiFiPassword))
-            strlcat(config.WiFiPassword, "\0", sizeof(config.WiFiPassword));
-        //WiFi.begin(config.WiFiSsid, config.WiFiPassword);
-        WiFi.begin("Wi_Fi_Station", "11012700");
+        if (!strlen(config.WiFiSsid) < sizeof(config.WiFiSsid)-1)
+            config.WiFiSsid[sizeof(config.WiFiSsid) - 1] = '\0';
+        if (!strlen(config.WiFiPassword) < sizeof(config.WiFiPassword)-1)
+            config.WiFiPassword[sizeof(config.WiFiPassword) - 1] = '\0';
+        WiFi.begin(config.WiFiSsid, config.WiFiPassword);
         while (WiFi.status() != WL_CONNECTED)
         {
             delay(500);
@@ -74,12 +73,12 @@ void ConfigWiFi(ConfigValues &config)
         Serial.println(WiFi.localIP());
         Serial.println(WiFi.macAddress());
 
-        //ESP32Time rtcToWiFiStart;
+        // ESP32Time rtcToWiFiStart;
         configTime(TIMEZONE * 3600, DAYLIGHTOFFSET, NTP_SERVER);
         struct tm timeinfo;
         if (getLocalTime(&timeinfo))
         {
-            //rtcToWiFiStart.setTimeStruct(timeinfo);
+            // rtcToWiFiStart.setTimeStruct(timeinfo);
             rtc.setTimeStruct(timeinfo);
         }
         Serial.printf("%s\n", (rtc.getDateTime(true)).c_str());
