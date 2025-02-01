@@ -1,6 +1,5 @@
 #include "WorkTasks.h"
 #include "ConfigManager.h"
-// #include "ESP32Time.h"
 #include "SensorMeasurements.h"
 
 SemaphoreHandle_t xMutexConfig = xSemaphoreCreateMutex();
