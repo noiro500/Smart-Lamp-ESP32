@@ -15,7 +15,7 @@ void HandleFind(AsyncWebServerRequest *request)
 {
     Json result;
     result.add("IP", WiFi.localIP().toString());
-    result.add("Port", WEBSERVER_PORT);
+    result.add("Port", String(WEBSERVER_PORT));
     result.add("DeviceName", ("ESP32_" + WiFi.macAddress()));
     request->send(200, "application/json", result.toString());
     result.clear();

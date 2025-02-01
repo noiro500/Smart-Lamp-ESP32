@@ -1,6 +1,6 @@
 #include "WorkTasks.h"
 #include "ConfigManager.h"
-//#include "ESP32Time.h"
+// #include "ESP32Time.h"
 #include "SensorMeasurements.h"
 
 SemaphoreHandle_t xMutexConfig = xSemaphoreCreateMutex();
@@ -53,7 +53,7 @@ void LampTask(void *pvParameters)
 void TemperatureInHoursTask(void *pvParameters)
 {
     TempAndHumInHours *tempAndHumInHours = (TempAndHumInHours *)pvParameters;
-    //ESP32Time rtc;
+    // ESP32Time rtc;
     int lastUpdateHour = -1;
     /*Getting the initial time for vTaskDelayUntil*/
     /*Получение начального времени для vTaskDelayUntil*/
@@ -112,10 +112,10 @@ void TempAndHumCacheUpdateTask(void *pvParameters)
     while (true)
     {
         xSemaphoreTake(xMutexSensor, portMAX_DELAY);
-        tempAndHumCachedResponse = std::make_unique<char[]>(50); 
+        tempAndHumCachedResponse = std::make_unique<char[]>(50);
         auto measurements = GetMeasurementsFromSensor();
         if (fabsf(measurements[0] - (-50.00f)) <= epsilon && fabsf(measurements[1] - (-60.00f)) <= epsilon)
-             strcpy(tempAndHumCachedResponse.get(), "Error reading AM2320 sensor");
+            strcpy(tempAndHumCachedResponse.get(), "Error reading AM2320 sensor");
         else if (fabsf(measurements[0] - (-50.00f)) <= epsilon && fabsf(measurements[1] - (-70.00f)) <= epsilon)
             strcpy(tempAndHumCachedResponse.get(), "AM2320 sensor offline");
         else if (fabsf(measurements[0] - (-1000.00f)) <= epsilon && fabsf(measurements[1] - (-1000.00f)) <= epsilon)
@@ -126,8 +126,8 @@ void TempAndHumCacheUpdateTask(void *pvParameters)
             measurementJson.add("Temperature", measurements[0]);
             measurementJson.add("Humidity", measurements[1]);
             strcpy(tempAndHumCachedResponse.get(), measurementJson.toString().c_str());
-            xSemaphoreGive(xMutexSensor);
-            vTaskDelay(pdMS_TO_TICKS(10000));
         }
+        xSemaphoreGive(xMutexSensor);
+        vTaskDelay(pdMS_TO_TICKS(10000));
     }
 }
