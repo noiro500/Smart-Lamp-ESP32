@@ -8,9 +8,6 @@ std::unique_ptr<float[]> GetMeasurementsFromSensor()
     std::unique_ptr<float[]> array = std::make_unique<float[]>(2);
     if (IS_TEST_MODE)
     {
-        float tempTemp = 0, tempHum = 0;
-        tempTemp += random(-1.0f, 15.0f);
-        tempHum += random(-1.0f, 100.0f);
         array[0] = random(-1.0f, 15.0f);
         array[1] = random(-1.0f, 100.0f);
         return array;

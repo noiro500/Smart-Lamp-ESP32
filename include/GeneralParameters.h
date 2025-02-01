@@ -1,5 +1,5 @@
 #pragma once
-#define IS_TEST_MODE 1                              //Enable test mode? (0 - no, 1 - yes)
+#define IS_TEST_MODE 0                              //Enable test mode? (0 - no, 1 - yes)
 
 /*Default value structure ConfigValues defaultValues*/
 #define WIFI_MODE "WIFI_STA"                        // WiFi Mode (WIFI_AP, WIFI_STA)

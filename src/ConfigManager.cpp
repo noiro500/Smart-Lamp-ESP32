@@ -6,7 +6,7 @@ Preferences preferences;
 DNSServer dnsServer;
 // WebServer server(WEBSERVER_PORT);
 AsyncWebServer server(WEBSERVER_PORT);
-ESP32Time rtc (3600*TIMEZONE);
+ESP32Time rtc;
 
 void SaveConfigToNVS(ConfigValues &config)
 {
@@ -62,7 +62,8 @@ void ConfigWiFi(ConfigValues &config)
             strlcat(config.WiFiSsid, "\0", sizeof(config.WiFiSsid));
         if(!strlen(config.WiFiPassword) < sizeof(config.WiFiPassword))
             strlcat(config.WiFiPassword, "\0", sizeof(config.WiFiPassword));
-        WiFi.begin(config.WiFiSsid, config.WiFiPassword);
+        //WiFi.begin(config.WiFiSsid, config.WiFiPassword);
+        WiFi.begin("Wi_Fi_Station", "11012700");
         while (WiFi.status() != WL_CONNECTED)
         {
             delay(500);

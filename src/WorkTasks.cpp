@@ -125,7 +125,7 @@ void TempAndHumCacheUpdateTask(void *pvParameters)
             Json measurementJson;
             measurementJson.add("Temperature", measurements[0]);
             measurementJson.add("Humidity", measurements[1]);
-            strlcpy(tempAndHumCachedResponse.get(), measurementJson.toString().c_str(), sizeof(tempAndHumCachedResponse.get()));
+            strcpy(tempAndHumCachedResponse.get(), measurementJson.toString().c_str());
         }
         xSemaphoreGive(xMutexSensor);
         vTaskDelay(pdMS_TO_TICKS(10000));
