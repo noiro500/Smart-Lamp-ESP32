@@ -75,7 +75,7 @@ void HandleTemperatureInHours(AsyncWebServerRequest *request)
     JsonArray humidityJsonArray;
     for (int i = 0; i < 24; i++)
     {
-        hoursJsonArray.push(temperatureInHours.hour[i]);
+        hoursJsonArray.push((int32_t)temperatureInHours.hour[i]);
         temperaturesJsonArray.push(temperatureInHours.temperature[i]);
         humidityJsonArray.push(temperatureInHours.humidity[i]);
     }
