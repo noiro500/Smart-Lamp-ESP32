@@ -55,6 +55,15 @@
         "regex": "cpp",
         "bitset": "cpp",
         "list": "cpp",
-        "compare": "cpp"
+        "compare": "cpp",
+        "bit": "cpp",
+        "concepts": "cpp",
+        "condition_variable": "cpp",
+        "ratio": "cpp",
+        "mutex": "cpp",
+        "numbers": "cpp",
+        "semaphore": "cpp",
+        "stop_token": "cpp",
+        "thread": "cpp"
     }
 }

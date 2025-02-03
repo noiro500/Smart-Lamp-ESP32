@@ -3,7 +3,7 @@
 #include "SensorMeasurements.h"
 
 // AM2320 am2320(&Wire);
-//ESP32Time rtc;
+// ESP32Time rtc;
 ConfigValues config;
 
 void HandleRoot(AsyncWebServerRequest *request)
@@ -37,13 +37,17 @@ void HandleGetTempAndHum(AsyncWebServerRequest *request)
 
 void HandleSetTime(AsyncWebServerRequest *request)
 {
-    static constexpr const char *urlExample = "http://x.x.x.x:180/settime?hour=0&min=0&sec=0&day=1&month=1&year=2022";
+    const char *urlExample = "http://x.x.x.x:180/settime?hour=0&min=0&sec=0&day=1&month=1&year=2022";
 
     if (WiFi.getMode() == WIFI_AP)
     {
         if (request->args() != 6)
         {
-            request->send(400, "text/plain", "Set time with example: " + String(urlExample));
+            const char *partMessage = "Set time with example: ";
+            std::unique_ptr<char[]> message = std::make_unique<char[]>(strlen(partMessage) + 1 + strlen(urlExample) + 1);
+            strcpy(message.get(), partMessage);
+            strcat(message.get(), urlExample);
+            request->send(400, "text/plain", message.get());
             return;
         }
         rtc.setTime(request->arg("hour").toInt(), request->arg("min").toInt(), request->arg("sec").toInt(),
@@ -88,15 +92,19 @@ void HandleTemperatureInHours(AsyncWebServerRequest *request)
 
 void HandleSetWiFiSTAParam(AsyncWebServerRequest *request)
 {
-    static constexpr const char *urlExample = "http://x.x.x.x:180/setwifistaparam?ssid=MyWiFi&password=12345678";
     if (request->args() != 2)
     {
-        request->send(400, "text/plain", "Set WiFi STA parameters with example: " + String(urlExample));
+        const char *urlExample = "http://x.x.x.x:180/setwifistaparam?ssid=MyWiFi&password=12345678";
+        const char *partMessage = "Set WiFi STA parameters with example: ";
+        std::unique_ptr<char[]> message = std::make_unique<char[]>(strlen(partMessage) + 1 + strlen(urlExample) + 1);
+        strcpy(message.get(), partMessage);
+        strcat(message.get(), urlExample);
+        request->send(400, "text/plain", message.get());
         return;
     }
     if (!LoadConfigFromNVC(config))
     {
-        request->send(500, "text/plain", "Unable to load config from NVS");
+        request->send(500, "Unable to load config from NVS");
         return;
     }
     xSemaphoreTake(xMutexConfig, portMAX_DELAY);
@@ -104,17 +112,27 @@ void HandleSetWiFiSTAParam(AsyncWebServerRequest *request)
     strlcpy(config.WiFiPassword, request->arg("password").c_str(), sizeof(config.WiFiPassword));
     SaveConfigToNVS(config);
     xSemaphoreGive(xMutexConfig);
-    request->send(200, "text/plain", "WiFi STA parameters are set:" + String(config.WiFiSsid) + ", " + String(config.WiFiPassword));
+    const char *partMessage = "WiFi STA parameters are set: ";
+    std::unique_ptr<char[]> message = std::make_unique<char[]>(strlen(partMessage) + 1 + strlen(config.WiFiSsid) + 1 + strlen(", ") + 1 + strlen(config.WiFiPassword) + 1);
+    strcpy(message.get(), partMessage);
+    strcat(message.get(), config.WiFiSsid);
+    strcat(message.get(), ", ");
+    strcat(message.get(), config.WiFiPassword);
+    request->send(200, "text/plain", message.get());
     delay(5000);
     ESP.restart();
 }
 
 void HandleSetLampTime(AsyncWebServerRequest *request)
 {
-    static constexpr const char *urlExample = "http://x.x.x.x:180/setlamptime?on=8&off=22";
     if (request->args() != 2)
     {
-        request->send(400, "text/plain", "Set on/off time with example: " + String(urlExample));
+        const char *urlExample = "http://x.x.x.x:180/setlamptime?on=8&off=22";
+        const char *partMessage = "Set on/off time with example: ";
+        std::unique_ptr<char[]> message = std::make_unique<char[]>(strlen(partMessage) + 1 + strlen(urlExample) + 1);
+        strcpy(message.get(), partMessage);
+        strcat(message.get(), urlExample);
+        request->send(400, message.get());
         return;
     }
     if (!LoadConfigFromNVC(config))
@@ -127,16 +145,34 @@ void HandleSetLampTime(AsyncWebServerRequest *request)
     config.LampOffTimeHours = request->arg("off").toInt();
     SaveConfigToNVS(config);
     xSemaphoreGive(xMutexConfig);
-    request->send(200, "text/plain", "Lamp time is set to:\n" + String("On: ") + String(config.LampOnTimeHours) + " hours\n" + "Off: " + String(config.LampOffTimeHours) + " hours\n");
+    const char *partMessage = "Lamp time is set to: ";
+    char LampOnTimeHours[3];
+    char LampOffTimeHours[3];
+    itoa(config.LampOnTimeHours, LampOnTimeHours, 10);
+    itoa(config.LampOffTimeHours, LampOffTimeHours, 10);
+    std::unique_ptr<char[]> message = std::make_unique<char[]>(strlen(partMessage) + 1 + strlen("On: ") + 1 + strlen(LampOnTimeHours)+1 + strlen(" hours\n") + 1 + strlen("Off: ") + 1 + strlen(LampOffTimeHours)+1 + strlen(" hours\n")+1);
+    strcpy(message.get(), partMessage);
+    strcat(message.get(), "On: ");
+    strcat(message.get(), LampOnTimeHours);
+    strcat(message.get(), " hours\n");
+    strcat(message.get(), "Off: ");
+    strcat(message.get(), LampOffTimeHours);
+    strcat(message.get(), " hours\n");
+    request->send(200, "text/plain", message.get());
+    return;
 }
 
 void HandleLampOlwayseOn(AsyncWebServerRequest *request)
 {
 
-    static constexpr const char *urlExample = "http://x.x.x.x:180/lampalwayson?on=0";
     if (request->args() != 1)
     {
-        request->send(400, "text/plain", "Set parameter with example: " + String(urlExample));
+        const char *urlExample = "http://x.x.x.x:180/lampalwayson?on=0";
+        const char *partMessage = "Set parameter with example: ";
+        std::unique_ptr<char[]> message = std::make_unique<char[]>(strlen(partMessage) + 1 + strlen(urlExample) + 1);
+        strcpy(message.get(), partMessage);
+        strcat(message.get(), urlExample);
+        request->send(400, "text/plain", message.get());
         return;
     }
     if (!LoadConfigFromNVC(config))
@@ -147,8 +183,14 @@ void HandleLampOlwayseOn(AsyncWebServerRequest *request)
     xSemaphoreTake(xMutexConfig, portMAX_DELAY);
     config.LampAlwayseOn = request->arg("on").toInt();
     SaveConfigToNVS(config);
-    request->send(200, "text/plain", "Lamp alwayse on is set to: " + String(config.LampAlwayseOn));
     xSemaphoreGive(xMutexConfig);
+    const char *partMessage = "Lamp alwayse on is set to: ";
+    char LampAlwayseOn[3];
+    itoa(config.LampAlwayseOn, LampAlwayseOn, 10);
+    std::unique_ptr<char[]> message = std::make_unique<char[]>(strlen(partMessage) + 1 + strlen(LampAlwayseOn) + 1);
+    strcpy(message.get(), partMessage);
+    strcat(message.get(), LampAlwayseOn);
+    request->send(200, "text/plain", message.get());
 }
 
 void HandleGetConfigValues(AsyncWebServerRequest *request)
@@ -165,16 +207,24 @@ void HandleGetConfigValues(AsyncWebServerRequest *request)
 
 void HandleChangeWiFiMode(AsyncWebServerRequest *request)
 {
-    static constexpr const char *urlExample = "http://x.x.x.x:180/changewifimode?mode=WIFI_AP";
+    const char *urlExample = "http://x.x.x.x:180/changewifimode?mode=WIFI_AP";
     if (request->args() != 1)
     {
-        request->send(400, "text/plain", "server.args() != 1 Set parameter only WIFI_STA or WIFI_AP with example: " + String(urlExample));
+        const char *partMessage = "server.args() != 1 Set parameter only WIFI_STA or WIFI_AP with example: ";
+        std::unique_ptr<char[]> message = std::make_unique<char[]>(strlen(partMessage) + 1 + strlen(urlExample) + 1);
+        strcpy(message.get(), partMessage);
+        strcat(message.get(), urlExample);  
+        request->send(400, "text/plain", message.get());
         return;
     }
     const String &mode = request->arg("mode");
     if (mode != "WIFI_STA" && mode != "WIFI_AP")
     {
-        request->send(400, "text/plain", "Set parameter only WIFI_STA or WIFI_AP with example: " + String(urlExample));
+        const char *partMessage = "Set parameter only WIFI_STA or WIFI_AP with example: ";
+        std::unique_ptr<char[]> message = std::make_unique<char[]>(strlen(partMessage) + 1 + strlen(urlExample) + 1);
+        strcpy(message.get(), partMessage);
+        strcat(message.get(), urlExample);
+        request->send(400, "text/plain", message.get());
         return;
     }
     if (!LoadConfigFromNVC(config))
@@ -187,7 +237,11 @@ void HandleChangeWiFiMode(AsyncWebServerRequest *request)
     strlcpy(config.WiFiMode, mode.c_str(), sizeof(config.WiFiMode));
     SaveConfigToNVS(config);
     xSemaphoreGive(xMutexConfig);
-    request->send(200, "text/plain", "Wifi mode is set to: " + String(config.WiFiMode));
+    const char *partMessage = "Wifi mode is set to: ";
+    std::unique_ptr<char[]> message = std::make_unique<char[]>(strlen(partMessage) + 1 + strlen(config.WiFiMode) + 1);
+    strcpy(message.get(), partMessage);
+    strcat(message.get(), config.WiFiMode);
+    request->send(200, "text/plain", message.get());
     delay(5000);
     ESP.restart();
 }

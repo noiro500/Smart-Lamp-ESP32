@@ -41,8 +41,8 @@ void ConfigWiFi(ConfigValues &config)
         WiFi.softAPConfig(apIP, apIP, netMask);
         Serial.println("Setting up WiFi Access Point...");
         WiFi.softAP(config.SoftApSsid, config.WiFiPassword);
-        Serial.println("AP IP address: " + apIP.toString());
-        Serial.println("SoftApSsid: " + String(config.SoftApSsid));
+        Serial.printf("AP IP address: %s", apIP.toString());
+        Serial.printf("SoftApSsid: %s", config.SoftApSsid);
 
         if (!dnsServer.start(53, "*", apIP))
         {
