@@ -59,9 +59,9 @@ void ConfigWiFi(ConfigValues &config)
         /*Автоматически пытаемся переподключиться при потере соединения*/
         WiFi.setAutoReconnect(true);
         if (!strlen(config.WiFiSsid) < sizeof(config.WiFiSsid)-1)
-            config.WiFiSsid[sizeof(config.WiFiSsid) - 1] = '\0';
+            config.WiFiSsid[strlen(config.WiFiSsid) + 1] = '\0';
         if (!strlen(config.WiFiPassword) < sizeof(config.WiFiPassword)-1)
-            config.WiFiPassword[sizeof(config.WiFiPassword) - 1] = '\0';
+            config.WiFiPassword[strlen(config.WiFiPassword) + 1] = '\0';
         WiFi.begin(config.WiFiSsid, config.WiFiPassword);
         while (WiFi.status() != WL_CONNECTED)
         {
