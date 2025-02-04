@@ -41,13 +41,22 @@ void ConfigWiFi(ConfigValues &config)
         WiFi.softAPConfig(apIP, apIP, netMask);
         Serial.println("Setting up WiFi Access Point...");
         WiFi.softAP(config.SoftApSsid, config.WiFiPassword);
-        Serial.printf("AP IP address: %s", apIP.toString());
-        Serial.printf("SoftApSsid: %s", config.SoftApSsid);
+        Serial.printf("AP IP address: %s\n", apIP.toString());
+        Serial.printf("SoftApSsid: %s\n", config.SoftApSsid);
 
         if (!dnsServer.start(53, "*", apIP))
         {
             Serial.println("DHCP server failed to start");
-            delay(5000);
+            for (int i = 0; i < 3; i++)
+            {
+                delay(1000);
+                if (dnsServer.start(53, "*", apIP))
+                {
+                    Serial.println("DHCP server started after retry");
+                    return;
+                }
+            }
+            Serial.println("Failed to start DHCP server after retries");
             ESP.restart();
         }
         Serial.println("DHCP server started");
@@ -58,9 +67,9 @@ void ConfigWiFi(ConfigValues &config)
         /*Automatically try to reconnect when connection is lost*/
         /*Автоматически пытаемся переподключиться при потере соединения*/
         WiFi.setAutoReconnect(true);
-        if (strlen(config.WiFiSsid) < sizeof(config.WiFiSsid)-1)
+        if (strlen(config.WiFiSsid) < sizeof(config.WiFiSsid) - 1)
             config.WiFiSsid[strlen(config.WiFiSsid) + 1] = '\0';
-        if (strlen(config.WiFiPassword) < sizeof(config.WiFiPassword)-1)
+        if (strlen(config.WiFiPassword) < sizeof(config.WiFiPassword) - 1)
             config.WiFiPassword[strlen(config.WiFiPassword) + 1] = '\0';
         WiFi.begin(config.WiFiSsid, config.WiFiPassword);
         while (WiFi.status() != WL_CONNECTED)
@@ -73,12 +82,10 @@ void ConfigWiFi(ConfigValues &config)
         Serial.println(WiFi.localIP());
         Serial.println(WiFi.macAddress());
 
-        // ESP32Time rtcToWiFiStart;
         configTime(TIMEZONE * 3600, DAYLIGHTOFFSET, NTP_SERVER);
         struct tm timeinfo;
         if (getLocalTime(&timeinfo))
         {
-            // rtcToWiFiStart.setTimeStruct(timeinfo);
             rtc.setTimeStruct(timeinfo);
         }
         Serial.printf("%s\n", (rtc.getDateTime(true)).c_str());
